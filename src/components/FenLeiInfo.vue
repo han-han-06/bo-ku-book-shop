@@ -7,7 +7,7 @@
                     <div class="pic-aaa">
                         <!-- 图片{{index}} -->
                         <span class="bok-pic">                               
-                            <!-- 160*160 -->
+                            <!-- 160*160 ,我就试试dev分支-->
                             <img src="../assets/images/book.png">
                         </span>
                         <div class='price' style="font-size:14px;color:#6f6f6f">计算机科学与技术</div>
