@@ -1,4 +1,4 @@
-<template>
+<template> 
     <div class="shopping-cart">
         <!-- 购物车页面,分为头部，下面做成卡片的形式 -->
         <div class="cart-header">
@@ -16,9 +16,13 @@
         </div>
         <!-- 这里放每个购物车的内容 -->
         <div class="cart-content">
+            <!-- 我的购物车 -->
+            <div class="my-car">
+                <span style="margin-left:20px">我的购物车</span>
+            </div>
             <!-- 全选，商品 -->
             <div class="cart-content_head">
-                <el-checkbox v-model="checkAll" class="check-all">全选</el-checkbox>
+                <el-checkbox v-model="checkAll" class="check-all" @change="onCheckAll">全选</el-checkbox>
                 <span style="margin-right:20px">商品</span>
                 <span style="margin-left:445px">单价</span>
                 <span style="margin-left:130px">数量</span>
@@ -30,7 +34,7 @@
                     <div v-for="(item,index) in carInfo" :key="index" class="cart_list">
                     <!-- 选中 -->
                     <div class="car-check">
-                        <el-checkbox v-model="checkOne"></el-checkbox>
+                        <el-checkbox v-model="carInfo[index].isCheck" @change='changeCheck(carInfo[index].isCheck,index)'></el-checkbox>
                     </div>
                     <!-- 图片和信息 -->
                     <div class="car-img_info">
@@ -43,19 +47,20 @@
                     </div>
                     <!-- 单价 -->
                     <div style="margin-left:114px">
-                        <span>￥ 352.55</span>
+                        <span>￥ {{item.singalPrice}}</span>
                     </div>
                     <!-- 数量 -->
                     <div class="car_num" style="margin-left:114px" >
                         <!-- ++ -->
-                        <span class="el-icon-circle-plus-outline" @click="purchaseQuantity++"></span>
+                        <span class="el-icon-circle-plus-outline" @click="tianJia(item.num,index)"></span>
                         <!-- 购买数量 -->
-                        <span class="num-inp">{{purchaseQuantity}}</span>
+                        <span class="num-inp">{{item.num}}</span>
                         <!-- 减减 -->
-                        <span class="el-icon-remove-outline" @click="subNum"></span>
+                        <span class="el-icon-remove-outline" @click="subNum(item.num,index)"></span>
                     </div>
+                    <!-- 总价,小计 -->
                     <div style="margin-left:171px">
-                        ￥ 655.55
+                        ￥ {{item.totalPrice}}
                     </div>
                 </div>
                 </div>
@@ -74,12 +79,10 @@
             </div>
             <!-- 全选按钮，选中结算那块 -->
             <div class="cart-content_foot">
-                <!-- <div> -->
-                    <!-- <el-checkbox v-model="checkAll">全选</el-checkbox> -->
-                <!-- </div> -->
                 <div style="">
                     共选择 <span style="color:red">{{selectedNum}}</span> 件商品
                 </div>
+                <!-- 总价和结算那块 -->
                 <div  style="margin-right:0;display:flex">
                     <div style="margin-right:20px">总价 ￥<span style="color:red"> {{totalPrice}} </span></div>
                     <div @click='onSettlement'  class="jiesuan-btn" >
@@ -88,7 +91,6 @@
                 </div>
             </div>
         </div>
-        
     </div>
 </template>
 <script>
@@ -101,16 +103,53 @@ export default {
             total:200,
             // 是否全选
             checkAll:false,
-            carInfo:[1,2,3,4,5,6],
+            carInfo:[{'name':1},{'name':2},{'name':3},{'name':4},{'name':5},{'name':5},{'name':5},{'name':5}],
             // 选中某一个
             checkOne:false,
             // 购物车数量
             purchaseQuantity:0,
-            // 一共选中了几件商品
-            selectedNum:1,
-            // 总价
-            totalPrice:1
         }
+    },
+    computed:{
+        // 总共选中的商品数
+        selectedNum:function() {
+            let a = 0
+            this.carInfo.map(el =>{
+                if(el.isCheck) {
+                    a++
+                }
+            })
+            return a
+        },
+        // 总价监听器
+        totalPrice:function() {
+            let total = 0
+            // 存取选中的数组
+            let checkArr = []
+            // 选中得获取选中的数据，怎么获取呢，通过ischeck这个属性去获取，
+            this.carInfo.map((el,index) => {
+                // 获取选中的值
+                if(el.isCheck) {
+                    checkArr.push(el)
+                }
+            })
+            // 把每个产品的总价加起来，就好
+            checkArr.map(el => {
+                total = total + el.singalPrice*el.num
+            })
+            return total
+        }
+    },
+    created() {
+        this.carInfo.map(el =>{
+            // 是否选中
+            el.isCheck = false
+            // 选择数量
+            el.num = 1
+            el.singalPrice = 20
+            el.totalPrice = el.singalPrice*el.num
+            // el.totalPrice = 20
+        })
     },
     methods:{
          // 每页多少条
@@ -124,12 +163,53 @@ export default {
             this.pageInfo.page = val
         },
         // 减减
-        subNum() {
-            if(this.purchaseQuantity > 0) this.purchaseQuantity--
+        subNum(val,index) {
+            if(val > 1) {
+                let con =  this.carInfo[index]
+                con.num = con.num-1
+                this.$set(this.carInfo,index,con)
+                this.getTotalPrice(index)
+            }
         },
+        // 结算按钮
         onSettlement() {
-            // 把信息获取到，然后走接口去结账，跳转到结算页面
-        }                                                                                                         
+            // 把信息获取到，然后走接口去结账，
+            // 把选中的id和数量给他
+            this.$commonUtils.setMessage('success','结算成功')
+            // 跳转到订单页面
+            this.$router.push(
+                {name:'individualOrders'}
+            )
+        },
+        // 选中状态的切换
+        changeCheck(val,index) {
+            let con =  this.carInfo[index]
+            con.isCheck = val
+            this.$set(this.carInfo,index,con)
+        },
+        // 数量加加
+        tianJia(val,index) {
+            let con =  this.carInfo[index]
+            con.num = con.num+1
+            this.$set(this.carInfo,index,con)
+            this.getTotalPrice(index)
+        },
+        // 全选
+        onCheckAll(val) {
+            let arr =  [...this.carInfo ]
+            arr.map(el =>{
+                el.isCheck = val
+            })
+            this.carInfo =[]
+            this.carInfo.push(...arr)
+        },
+        // 获取总价
+        getTotalPrice(index) {
+            let con = this.carInfo[index]
+            // 获取相应的总价
+            con.totalPrice = con.singalPrice*con.num
+            this.$set(this.carInfo,index,con)
+        }         
     }
 }
 </script>
@@ -143,6 +223,7 @@ export default {
     width: 100%;
     position: fixed;
     background-color: #fff;
+    z-index: 6;
     left: 0;
     top: 0;
     box-shadow:0px 5px 10px 0px #e5e7eb;
@@ -179,6 +260,16 @@ export default {
     margin: 0 auto;
     padding: 20px 0;
     width: 1200px;
+    .my-car {
+        margin-top: 40px;
+        margin-left: 20px;
+        box-sizing: border-box;
+        height: 40px;
+        line-height: 40px;
+        background-color: #f5f5f5;
+        font-size: 14px;
+        font-weight: 700;
+    }
     .cart-header {
         height: 80px;
         // border: 1px solid pink;
@@ -188,11 +279,14 @@ export default {
     .cart-content {
         margin-top: 20px;
         // height: 800px;
-        border: 1px solid gold;
+        // border: 1px solid gold;
         .cart-content_head {
+            margin-left: 20px;
+            margin-top: 20px;
             height: 40px;
             line-height: 40px;
-            padding-left: 20px;
+            padding-left: 10px;
+            background-color: #f5f5f5;
             box-sizing: border-box;
             // border: 1px solid #ccc;
             .check-all {
@@ -205,9 +299,9 @@ export default {
             box-sizing: border-box;
             // border: 1px solid chartreuse;
             .cart-all_list {
-                height: 500px;
+                // height: 500px;
                 // background-color: pink;
-                overflow-y:auto;
+                // overflow-y:auto;
             }
             .cart_list {
                 display: flex;
@@ -218,6 +312,7 @@ export default {
                 // height: 150px;
                 .car-check {
                     margin-right: 45px;
+                    margin-left: 10px;
                 }
                 .car-img_info {
                     display: flex;
@@ -245,13 +340,13 @@ export default {
             }
         }
         .cart-content_foot {
-            padding-left: 20px;
+            margin-left: 20px;
             display: flex;
             justify-content: space-between;
             margin-top: 20px;
             border: 1px solid #ccc;
             height: 60px;
-            // padding: 10px 0;
+            padding-left: 10px;
             line-height: 60px;
         }
         .cart-foot {
