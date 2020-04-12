@@ -7,7 +7,7 @@
                 <div class="registered-heade_content">
                     <div class="heade_content">
                         <div class="boku-logo">
-                        <!-- <img class="boku-logo_img" src="../assets/images/logo.jpg"> -->
+                        <img class="boku-logo_img" src="../assets/images/logo.jpg">
                     </div>
                     <div class="boku-zhuce">欢迎登录</div>
                     </div>
@@ -18,17 +18,18 @@
         <div class="cart-content">
             <!-- 全选，商品 -->
             <div class="cart-content_head">
-                <el-checkbox v-model="checkAll">全选</el-checkbox>
-                <span>商品</span>
-                <span>单价</span>
-                <span>数量</span>
-                <span>小计</span>
+                <el-checkbox v-model="checkAll" class="check-all">全选</el-checkbox>
+                <span style="margin-right:20px">商品</span>
+                <span style="margin-left:445px">单价</span>
+                <span style="margin-left:130px">数量</span>
+                <span style="margin-left:245px">小计</span>
             </div>
             <!-- 内容 -->
             <div class="cart-content_center">
-                <div v-for="(item,index) in carInfo" :key="index" class="cart_list">
+                <div class="cart-all_list">
+                    <div v-for="(item,index) in carInfo" :key="index" class="cart_list">
                     <!-- 选中 -->
-                    <div car-check>
+                    <div class="car-check">
                         <el-checkbox v-model="checkOne"></el-checkbox>
                     </div>
                     <!-- 图片和信息 -->
@@ -37,11 +38,15 @@
                             <img src="../assets/images/order.jpg">
                         </div>
                         <div class="img-info_car">
-                            这个是图片信息这个是图片信息这个是图片信息
+                            这个是图片信息这个烦得很放到很干是是图片信息这个是图片简介
                         </div>
                     </div>
+                    <!-- 单价 -->
+                    <div style="margin-left:114px">
+                        <span>￥ 352.55</span>
+                    </div>
                     <!-- 数量 -->
-                    <div class="car_num">
+                    <div class="car_num" style="margin-left:114px" >
                         <!-- ++ -->
                         <span class="el-icon-circle-plus-outline" @click="purchaseQuantity++"></span>
                         <!-- 购买数量 -->
@@ -49,13 +54,10 @@
                         <!-- 减减 -->
                         <span class="el-icon-remove-outline" @click="subNum"></span>
                     </div>
-                    <!-- 单价 -->
-                    <div>
-                        <span>￥ 352.55</span>
-                    </div>
-                    <div>
+                    <div style="margin-left:171px">
                         ￥ 655.55
                     </div>
+                </div>
                 </div>
                 <!-- 这是分页 -->
                 <div class="cart-foot">
@@ -72,14 +74,18 @@
             </div>
             <!-- 全选按钮，选中结算那块 -->
             <div class="cart-content_foot">
-                <div>
-                    <el-checkbox v-model="checkAll">全选</el-checkbox>
+                <!-- <div> -->
+                    <!-- <el-checkbox v-model="checkAll">全选</el-checkbox> -->
+                <!-- </div> -->
+                <div style="">
+                    共选择 <span style="color:red">{{selectedNum}}</span> 件商品
                 </div>
-                <span>
-                    一选择{{selectedNum}}件商品
-                </span>
-                <span>总价{{totalPrice}}</span>
-                <el-button @click='onSettlement'>去结算</el-button>
+                <div  style="margin-right:0;display:flex">
+                    <div style="margin-right:20px">总价 ￥<span style="color:red"> {{totalPrice}} </span></div>
+                    <div @click='onSettlement'  class="jiesuan-btn" >
+                        <span>去结算</span>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -167,7 +173,6 @@ export default {
             margin-top: 70px;
         }
         }
-        
     }
 }
 .shopping-cart {
@@ -176,40 +181,55 @@ export default {
     width: 1200px;
     .cart-header {
         height: 80px;
-        border: 1px solid pink;
+        // border: 1px solid pink;
         padding: 15px;
         box-sizing: border-box;
     }
     .cart-content {
         margin-top: 20px;
-        height: 800px;
+        // height: 800px;
         border: 1px solid gold;
         .cart-content_head {
             height: 40px;
             line-height: 40px;
             padding-left: 20px;
             box-sizing: border-box;
-            border: 1px solid #ccc;
+            // border: 1px solid #ccc;
+            .check-all {
+                margin-right: 20px;
+            }
         }
         // 购物车内容
         .cart-content_center {
             padding-left: 20px;
             box-sizing: border-box;
-            border: 1px solid chartreuse;
+            // border: 1px solid chartreuse;
+            .cart-all_list {
+                height: 500px;
+                // background-color: pink;
+                overflow-y:auto;
+            }
             .cart_list {
                 display: flex;
-                height: 150px;
+                border: 1px solid #ccc;
+                margin-top: 20px;
+                padding: 20px 0;
+                box-sizing: border-box;
+                // height: 150px;
+                .car-check {
+                    margin-right: 45px;
+                }
                 .car-img_info {
                     display: flex;
                     .car-img {
                         width: 80px;
                         height: 80px;
-                        border:2px solid yellow;
+                        // border:2px solid yellow;
                     }
                     .img-info_car {
                         width: 300px;
-                        height:150px;
-                        border: 1px solid #ccc;
+                        // height:150px;
+                        // border: 1px solid #ccc;
                         box-sizing: border-box;
                     }
                     
@@ -226,12 +246,31 @@ export default {
         }
         .cart-content_foot {
             padding-left: 20px;
+            display: flex;
+            justify-content: space-between;
             margin-top: 20px;
-            border: 1px solid pink;
-            height: 100px;
-            line-height: 100px;
+            border: 1px solid #ccc;
+            height: 60px;
+            // padding: 10px 0;
+            line-height: 60px;
+        }
+        .cart-foot {
+            margin: 20px 0;
+            text-align: right;
+            padding-right: 20px;
+            // float: right;
+            // display: block;
+            // right: 0;
+            // background-color: pink;
         }
     }   
+    .jiesuan-btn {
+        height: 100%;
+        width: 110px;
+        line-height: 60px;
+        text-align: center;
+        background-color: red;
+    }
 }
 
 </style>

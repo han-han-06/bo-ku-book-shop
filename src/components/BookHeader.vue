@@ -5,14 +5,13 @@
         <div class="head-top">
             <div class="head-top_t">
                 <div class="logo">
-                    <!-- <img src="../assets/images/logo.jpg"> -->
-                    <!-- <span class="shop-mall">美妆商城</span> -->
+                    <img src="../assets/images/logo.jpg">
+                    <span class="shop-mall">美妆商城</span>
                 </div>
                 <div>
-                    <!-- <span>欢迎光临，<i class="please-log" @click="onLogin" >请登录</i></span> -->
+                    <span>欢迎光临，<i class="please-log" @click="onLogin" >请登录</i></span>
                 </div>
             </div>
-            
         </div>
         <!-- 导航栏 -->
         <div class="head-middle">
@@ -30,8 +29,8 @@
             <div class="middle-car">
                 <div class="middle-ca_a">
                     <div class="car" @click="goToCar">
-                        <!-- <span class="el-icon-shopping-cart-2"></span> -->
-                        <!-- <span>购物车</span> -->
+                        <span class="el-icon-shopping-cart-2"></span>
+                        <span>购物车</span>
                         <!-- 加购数量 -->
                         <span>{{purchaseQuantity}}</span>
                     </div>

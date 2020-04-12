@@ -11,40 +11,39 @@
             <el-main>
                 <!-- 轮播 -->
                 <div class="lunbo">
-                    <!-- <BookLunBo>轮播</BookLunBo> -->
+                    <BookLunBo>轮播</BookLunBo>
                 </div>
                 <!-- 这个盒子是三个书的分类 -->
                 <div v-if="hiddenFenLei">
                     <!-- 精选图书 -->
-                    <!-- <div class="jingxuan">
+                    <div class="jingxuan">
                         <BookJingXuan
                         :arrList='arrList'
                         ></BookJingXuan>
-                    </div> -->
+                    </div>
                     <!-- 特价图书 -->
-                    <!-- <div class="tejia">
+                    <div class="tejia">
                         <BookJingXuan
                         :arrList='arrList'
                         ></BookJingXuan>
-                    </div> -->
-                    <!-- <div class="tejia">
+                    </div>
+                    <div class="tejia">
                         <BookJingXuan
                         :arrList='arrList'
                         ></BookJingXuan>
-                    </div> -->
+                    </div>
                 </div>
                 <!-- 选中某一个盒子的时候展示某一个分类 -->
                 <div v-if="!hiddenFenLei">
                     <!-- 图片怎么显示呢，就多显示几排么 -->
-                    <!-- <BookJingXuan
+                    <BookJingXuan
                     :arrList='arrList'
                     ></BookJingXuan>
                     <BookJingXuan
                     :arrList='arrList'
-                    ></BookJingXuan> -->
+                    ></BookJingXuan>
                 </div>
             </el-main>
-            
         </el-container>
         
     </div>
