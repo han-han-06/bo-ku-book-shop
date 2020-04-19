@@ -6,9 +6,13 @@
             <div class="registered-heade_content">
                 <div class="heade_content">
                     <div class="boku-logo">
-                    <img class="boku-logo_img" src="../assets/images/logo.jpg">
+                        <!-- <img class="boku-logo_img" src="../assets/images/logo.jpg"> -->
+                    </div>
+                    <div class="boku-zhuce">欢迎登录</div>
+                    
                 </div>
-                <div class="boku-zhuce">欢迎登录</div>
+                <div class="registered-heade_login">
+                    <span class="heade_login" @click.stop="onGoRe">请注册</span>
                 </div>
             </div>
         </div>
@@ -68,17 +72,17 @@ import request from '../api/api'
         submitForm(formName) {
             // console.log(22222)
             this.$refs[formName].validate().then(res =>{
-                request.logIn(this.ruleForm).then(res=> {
-                    // 消息提示
+                request.logIn(this.ruleForm).then((res) =>{
+                    console.log('res',res)
+                    this.$store.state.userId = res.userId
                     this.$commonUtils.setMessage('success','登录成功')
+                    // 跳转到首页
+                    this.$router.push({
+                        // console.log("this.$store.state.userId",this.$store.state.userId)
+                        name:'bookStoreHome',   
+                    })
                 })
-                // 跳转到首页
-                this.$router.push({
-                    name:'bookStoreHome',   
-                    params:{
-                        userName: this.ruleForm.userName
-                    }
-                })
+                
             });
         },
         resetForm(formName) {
@@ -108,7 +112,12 @@ import request from '../api/api'
             }
             this.ranNum = str
         },
-        // 登录后需要得这用户名跳转到首页页面
+        // 去注册
+        onGoRe() {
+            this.$router.push({
+                name:'registered'
+            })
+        }
         }
     }
 </script>
@@ -145,6 +154,16 @@ import request from '../api/api'
             color: #666;
             margin-top: 70px;
         }
+        }
+        .registered-heade_login {
+            margin-top: 75px;
+            color: #666;
+            .heade_login {
+                color: #EB4C44;
+            }
+            .heade_login:hover {
+                cursor: pointer;
+            }
         }
         
     }

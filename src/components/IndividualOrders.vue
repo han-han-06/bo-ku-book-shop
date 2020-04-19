@@ -1,11 +1,12 @@
 <template>
-    <div class="order-center ">
+    <div>
+        <div class="order-center ">
         <!-- 头部 -->
         <div class="registered-head">
             <div class="registered-heade_content">
                 <div class="heade_content">
                     <div class="boku-logo">
-                    <!-- <img class="boku-logo_img" src="../assets/images/logo.jpg"> -->
+                    <img class="boku-logo_img" src="../assets/images/logo.jpg">
                 </div>
                 <div class="boku-zhuce">欢迎登录</div>
                 </div>
@@ -13,15 +14,15 @@
         </div>
         <!-- 订单中心哦 -->
         <div class="my-order">我的订单</div>
-        <!--下面是订单，每个订单分为头部和内容，内容还得反图片  -->
+        <!--下面是订单，每个订单分为头部和内容，内容还   得反图片  -->
         <div class="order-hea">
             <span>订单详情</span>
             <span style="margin-left:53px">数量</span>
             <span>金额</span>
             <span>收货人</span>
-            <span style="margin-right:53px">状态</span>
+            <!-- <span style="margin-right:53px">状态</span> -->
             <!-- 操作变成已完成的那种就好 -->
-            <!-- <span>操作</!-->
+            <span style="margin-right:40px">操作</span>
         </div>
         <div>
             <div v-for="(item,index) in arr" :key="index" class="order-book_content">
@@ -47,31 +48,70 @@
                         <span>x2</span>
                     </div>
                     <!-- 图书价格 -->
-                    <div style="margin-left:195px;color:red">
+                    <div style="margin-left:195px;color:red;flex-shink:0">
                         <span>总额 ￥22.22</span>
                     </div>
                     <!-- 收货人 -->
-                    <div style="margin-left:200px">
+                    <div style="margin-left:200px;flex-warp:nowarp">
                         <span>王涵</span>
                     </div>
                     <!-- 状态 -->
-                    <div style="margin-left:229px">
-                        <span>已完成</span>
+                    <div style="margin-left:229px;color:red">
+                        <el-button type="text" @click="confirmReceipt" style="color:red">去评价</el-button>
+                        <!-- <el-button type="text">确认收货</el-button> -->
                     </div>
                 </div>
             </div>
         </div>
+        <div class="order-page">
+                <!-- 分页 -->
+                <!-- 哈哈哈 -->
+                <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="pageInfo.page"
+                    :page-sizes="[20, 30, 40, 50]"
+                    :page-size="pageInfo.size"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="totalOrder">
+                </el-pagination>
+            </div>
+    </div>
+    <div class="store-footer">
+        <BookStoreFooter></BookStoreFooter>
+    </div>
     </div>
 </template>
 <script>
 export default {
     data() {
         return {
-            arr:[1,2,3,4,5]
+            arr:[1,2,3,4,5],
+            pageInfo:{
+                page:1,
+                size:20
+            },
+            totalOrder:30
         }
     },
     // 
     methods:{
+        // 确认收货
+        confirmReceipt() {
+            // 确认收货后跳转到评论页面
+            this.$router.push(
+                {name:'bookComment'}) 
+        },
+         // 每页多少条
+        handleSizeChange(val) {
+            console.log('每页多少条',val)
+            this.pageInfo.size = val
+        },
+        // 点击的是第几页
+        handleCurrentChange(val) {
+            console.log('当前页',val)
+            this.pageInfo.page = val
+        },
     }
 }
 </script>
@@ -120,11 +160,13 @@ export default {
     border:1px solid #e5e5e5 ;
     display: flex;
     justify-content: space-between;
-    background-color: #f5f5f5;
+    background-color: #fff;
 }
 .order-book_content {
     margin-top: 20px;
     border: 1px solid #e5e5e5;
+    padding-left: 1px;
+    box-sizing: border-box;
 }
 .order-center {
     width: 1200px;
@@ -133,9 +175,9 @@ export default {
         margin-top: 140px;
         padding-left: 20px;
         box-sizing: border-box;
-        height: 40px;
-        line-height: 40px;
-        background-color: #f5f5f5;
+        height: 50px;
+        line-height: 50px;
+        background-color: #fff;
         font-size: 14px;
         font-weight: 700;
     }
@@ -149,7 +191,7 @@ export default {
         padding:10px 20px;
         display: flex;
         // height: 150px;
-        // background-color: skyblue;
+        background-color: #fff;
         .shu-cont {
             display: flex;
             .shu-cont_img {
@@ -167,5 +209,12 @@ export default {
         
         
     }
+}
+.order-page {
+    margin-top: 20px;
+    text-align: right;
+}
+.store-footer {
+    margin-top: 20px;
 }
 </style>

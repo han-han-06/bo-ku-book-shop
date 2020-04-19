@@ -25,30 +25,62 @@
             <el-form-item label="出版时间" prop="bookPublishTime">
                 <el-input v-model="ruleForm.bookPublishTime"></el-input>
             </el-form-item>
-            <!-- -->
             <el-form-item label="图书价格" prop="bookNewPrice">
                 <el-input v-model="ruleForm.bookNewPrice"></el-input>
             </el-form-item>
             <el-form-item label="图书原价" prop="bookOldPrice">
                 <el-input v-model="ruleForm.bookOldPrice"></el-input>
             </el-form-item>
-            <!-- 上传图片 -->
-            <el-upload
-                action="http://192.168.10.83:8989/bokustore/book/upload"
-                name='picture'
-                list-type="picture-card"
-                :on-preview="handlePictureCardPreview"
-                :on-success='successFile'
-                :on-remove="handleRemove">
-                <i class="el-icon-plus"></i>
-            </el-upload>
+            <!-- 上传封面 -->
+            <!-- 图书封面 -->
+            <el-form-item label="图书封面">
+            <div>
+                <el-upload
+                    class="upload-demo"
+                    action="http://192.168.10.83:8989/bokustore/book/upload"
+                    name='picture'
+                    :on-preview="handlePictureCardPreview2"
+                    :on-remove="handleRemove2"
+                    :on-success='successFile2'
+                    :file-list="picArr"
+                    list-type="picture"
+                    >
+                    <el-button size="small" type="primary">点击上传</el-button>
+                    <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                </el-upload>
+                <el-dialog :visible.sync="dialogVisible2">
+                    <img width="100%" :src="dialogImageUrl2" alt="">
+                </el-dialog>
+            </div>
+            </el-form-item>
+            <!-- 上传大图-->
+            <!-- 这有点问题，就是不能展示后端给的图片 -->
+            <el-form-item label="图片详情">
+                <!-- 这里放一个div，用于放置图片 -->
+                <el-upload
+                    class="upload-demo"
+                    action="http://192.168.10.83:8989/bokustore/book/upload"
+                    name='picture'
+                    :on-preview="handlePictureCardPreview"
+                    :on-remove="handleRemove"
+                    :on-success='successFile'
+                    :file-list="bookPictures"
+                    list-type="picture"
+                    >
+                    <el-button size="small" type="primary">点击上传</el-button>
+                    <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                </el-upload>
+                <!-- -->
+            </el-form-item>
             <el-dialog :visible.sync="dialogVisible">
                 <img width="100%" :src="dialogImageUrl" alt="">
             </el-dialog>
             <el-form-item>
+                
                 <el-button type="primary" @click="onSave('ruleForm')">修改</el-button>
                 <el-button @click="resetForm('ruleForm')">重置</el-button>
             </el-form-item>
+            <!--  -->
     </el-form>
     </div>
 </template>
@@ -66,17 +98,17 @@ export default {
             bookClassify:[
                     {
                         label: "精选图书",
-                        value: "1"
+                        value: 1
                     },
                     {
                         label: "推荐图书",
-                        value: "2"
+                        value: 2
                     },
                     {
                         label: "科普图书",
-                        value: "3"
+                        value: 3
                     }
-                ],
+            ],
             rules:{
                 bookName:[
                     { required: true, message: '请输入', trigger: 'blur' },
@@ -106,8 +138,21 @@ export default {
                     { required: true, message: '请输入', trigger: 'blur' },
                 ],
             },
-            bookPictures:[],
-            bookId:""
+            // 图书详情列表
+            bookPictures:[{name:'',url:""}],
+            bookId:"",
+            // 是否显示主图图片
+            dialogVisible2:false,
+            // 封面list，实际上封面只能有一个
+            picArr:[
+                {
+                    name:'',url:""
+                }
+            ],
+            // 封面路径 
+            dialogImageUrl2:'',
+            // 图片是否能显示
+            flagPic:false
         }
     },
     props:{
@@ -116,19 +161,54 @@ export default {
             type:Object,
             default:()=> {}
         }
+        // 
+    },
+    watch:{
     },
     created() {
         this.bookId = this.ruleForm.bookId
+        // bookPictures
+        let arr = this.ruleForm.bookPictures
+        let a = []
+        a  = arr.map(el =>{
+            if(el.mainPic) {
+                let obj  = {}
+                // 获取相应的url
+                obj.url = el.pictureUrl
+                this.picArr =  [obj]
+                // return 一个空数组
+                return {name:'',url:""}
+                // return {}
+                // console.log('picArr',this.picArr)
+            }else if(el.mainPic===false){
+                // 存在
+                let obj  = {}
+                obj.url = el.pictureUrl
+                return obj
+            }else {
+                return {}
+            }
+        })
+        // console.log('a',a)  
+        this.bookPictures = a
     },
     methods:{
+        // 修改的保存
         onSave(formName){
         this.$refs[formName].validate((valid) => {
             if (valid) {
                 let {bookId} = this
+                // let adminId = this.$store.state.adminId
+                // adminId = 'a103'
                 let adminId = this.$store.state.adminId
                 adminId = 'a103'
-                console.log('bookPictures',this.bookPictures)
+                // console.log('bookPictures',this.bookPictures)
                 let data = {...this.ruleForm,adminId}
+                request.saveModifyFrom(bookId,data).then(res =>{
+                    // console.log('res')
+                    // 关闭侧滑
+                    this.$emit('close-draw')
+                })
             } 
             });
         },
@@ -136,7 +216,7 @@ export default {
         resetForm() {
             this.$emit('close-modify')
         },
-        // 移除文件
+         // 移除文件
         handleRemove(file, fileList) {
             // 移除文件的时候获取当前的list，进行赋值
             let arr = [...fileList]
@@ -152,14 +232,49 @@ export default {
         },
         // 图片上传成功
         successFile(response,file,fileList) {
-            this.bookPictures.push(response.result)
-            console.log('this.imgUrlList',this.imgUrlList)
-        }
+            let obj = {}
+            obj.MainPic = false
+            obj.url = response.result
+            this.bookPictures.push(obj)
+            // console.log('this.imgUrlList',this.imgUrlList)
+        },
+        // 封面的展示方法
+        handlePictureCardPreview2(file) {
+            // 获取图片地址
+            this.dialogImageUrl2 = file.url;
+            // 展示相应的图片
+            this.dialogVisible2 = true;
+        },
+        // 封面上传的文件
+        successFile2(response,file,fileList) {
+            // 这个是路径
+            // console.log('response.result',response.result)
+            let obj  = {}
+            obj.MainPic = true
+            obj.url = response.result
+            // 上传的是主图片，需要把它的标识变成true，是不是其他地方都不需要动吧
+            this.picArr.push(obj)
+        },
+        // 移除文件
+        handleRemove2(file, fileList) {
+            // 移除文件的时候获取当前的list，进行赋值
+            let arr = [...fileList]
+            // 获取当前存在的url3
+            this.picArr = arr.map(el => {
+                let obj = {}
+                obj.MainPic = truedou
+                obj.url = el.response.result
+                return obj
+            })
+            // console.log('bookPictures,移除',this.bookPictures
+        },
     }
 }
 </script>
 <style lang="scss" scoped>
 .modify-drawer {
+    max-height: calc(100% - 73px);
+    overflow-y: auto;
     padding: 40px;
     box-sizing: border-box;
 }

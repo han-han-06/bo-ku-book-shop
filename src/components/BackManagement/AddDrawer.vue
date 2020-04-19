@@ -29,8 +29,25 @@
             <el-form-item label="出版时间" prop="bookPublishTime">
                 <el-input v-model="ruleForm.bookPublishTime"></el-input>
             </el-form-item>
-            <!--  -->
-            <el-form-item label="上传图书" prop="bookPicture">
+            <!-- 上传封面 -->
+            <el-form-item label="图书封面">
+            <div>
+                <el-upload
+                    action="http://192.168.10.83:8989/bokustore/book/upload"
+                    name='picture'
+                    list-type="picture-card"
+                    :on-preview="handlePictureCardPreview2"
+                    :on-success='successFile2'
+                    :on-remove="handleRemove2">
+                    <i class="el-icon-plus"></i>
+                </el-upload>
+                <el-dialog :visible.sync="dialogVisible2">
+                    <img width="100%" :src="dialogImageUrl2" alt="">
+                </el-dialog>
+            </div>
+            </el-form-item>
+            <!-- 上传一些大图片 -->
+            <el-form-item label="详情图片" prop="bookPicture">
             <div>
                 <el-upload
                     action="http://192.168.10.83:8989/bokustore/book/upload"
@@ -67,6 +84,7 @@ export default {
         return {
             // 管理人员id，管理人员id放到store层是不是好点
             adminId:'',
+            // 添加图片的表单
             ruleForm:{
                 bookAuthor:'',
                 bookCategory:"",
@@ -78,6 +96,7 @@ export default {
                 bookPublishTime:'',
                 bookDetail:''
             },
+            // 图书字典表
             bookClassify:[
                     {
                         label: "精选图书",
@@ -123,22 +142,31 @@ export default {
             },
               // 图片路径
             dialogImageUrl: '',
+            // 封面路径 
+            dialogImageUrl2:'',
             // 是否显示
             dialogVisible: false,
             // 图片路径
-            bookPictures:[]
+            bookPictures:[],
+            // 是否显示主图图片
+            dialogVisible2:false,
+            // 封面list，实际上封面只能有一个
+            picArr:[]
         }
     },
     created() {
         let a = this.$store.state.adminId
-        console.log('a',a)
+        // console.log('a',a)
     },
     methods:{
+        // mainPic 是否是封面（也就是主图片）
         onSave(formName){
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     let adminId = this.$store.state.adminId || 'a103'
-                    let {ruleForm,bookPictures} = this
+                    let {ruleForm,bookPictures,picArr} = this
+                    // 把封面和其他详情图片都盒到一块
+                    bookPictures.push(...picArr)
                     // 参数整合
                     let data = {...ruleForm,adminId,bookPictures}
                     // 新增成功，关闭侧滑
@@ -150,6 +178,7 @@ export default {
                     // 调取jiekou
                     console.log(this.ruleForm)
                 } 
+                // 
             });
         },
         // 关闭弹窗
@@ -164,22 +193,58 @@ export default {
             this.bookPictures = arr.map(el=>{
                 return el.response.result
             })
+            
         },
         // 放大当前文件
         handlePictureCardPreview(file) {
-            this.dialogImageUrl = file.url;
+            this.dialogImageUrl = file.pictureUrl;
             this.dialogVisible = true;
         },
         // 图片上传成功
         successFile(response,file,fileList) {
-            this.bookPictures.push(response.result)
-            console.log('this.imgUrlList',this.imgUrlList)
-        }
+            let obj = {}
+            obj.mainPic = false
+            obj.pictureUrl = response.result
+            this.bookPictures.push(obj)
+            // console.log('this.imgUrlList',this.imgUrlList)
+        },
+        // 封面的展示方法
+        handlePictureCardPreview2(file) {
+            // 获取图片地址
+            this.dialogImageUrl2 = file.url;
+            // 展示相应的图片
+            this.dialogVisible2 = true;
+        },
+        // 封面上传的文件
+        successFile2(response,file,fileList) {
+            // 这个是路径
+            // console.log('response.result',response.result)
+            let obj  = {}
+            obj.mainPic = true
+            obj.pictureUrl = response.result
+            // 上传的是主图片，需要把它的标识变成true，是不是其他地方都不需要动吧
+            this.picArr.push(obj)
+        },
+        // 移除文件
+        handleRemove2(file, fileList) {
+            // 移除文件的时候获取当前的list，进行赋值
+            let arr = [...fileList]
+            // 获取当前存在的url3
+            this.picArr = arr.map(el => {
+                let obj = {}
+                obj.mainPic = true
+                obj.pictureUrl = el.response.result
+                return obj
+            })
+            // console.log('bookPictures,移除',this.bookPictures)
+        },
 }
 }
 </script>
 <style lang="scss" scoped>
 .modify-drawer {
+    max-height: calc(100% - 73px);
+    overflow-y: auto;
     padding: 40px;
     box-sizing: border-box;
 }

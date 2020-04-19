@@ -36,11 +36,11 @@
                     <el-form-item label="" prop="adminPassword">
                         <el-input type="password" v-model="ruleForm.adminPassword" autocomplete="off"  placeholder="请输入密码"></el-input>
                     </el-form-item>
-                    <el-form-item>
+                    <el-form-item >
                         <!-- 登录 -->
-                        <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
+                        <el-button type="primary" @click="submitForm('ruleForm')" class="deng-btn">登录</el-button>
                         <!--  -->
-                        还没有账号？<span type="primary" @click="cancle()">去注册</span>
+                        还没有账号？<span type="primary" @click="cancle()" style="color:red;cursor: pointer;">去注册</span>
                     </el-form-item>
                 </el-form>
             </div>
@@ -48,6 +48,7 @@
     </div>
 </template>
 <script>
+import request from '../../api/api'
     export default {
         data() {
         var checkCode = (rule, value, callback) => {
@@ -81,7 +82,12 @@
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     // 带着用户名跳转到商家页面，用于管理么
-                    this.$store.dispatch('adminLogin',this.ruleForm).then(res =>{
+                    request.adminLogin(this.ruleForm).then(res =>{
+                        this.$commonUtils.setMessage('success','登录成功')
+                        // id
+                        this.$store.state.adminId = res.adminId
+                        // 获取登录名
+                        this.$store.state.adminName = res.adminName
                         // 跳转到登录页面
                         this.$router.push({
                             name:'manageHome'
@@ -142,6 +148,7 @@
     display: flex;
     justify-content: space-between;
     .registered-heade_content {
+        
         height: 100%;
         width: 1200px;
         display: flex;
@@ -184,5 +191,12 @@
             }
         }
     }
+    .deng-btn {
+        margin-right: 150px;
+    }
 }
+// .aaa {
+//     display: flex;
+//     justify-content: space-between;
+// }
 </style>

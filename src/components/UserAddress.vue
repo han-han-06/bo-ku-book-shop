@@ -24,10 +24,13 @@
                 
             </div>
         </div>
+        <div class="back-Purchase" style="text-align:right;margin-right:20px;color:red" @click="backPurchase">
+            <span>返回结算</span>
+        </div>
     </div>
 </template>
 <script>
-
+import request from '../api/api'
 export default {
     data() {
         return {
@@ -39,8 +42,18 @@ export default {
     },
     created() {
         this.isAddress = false
+        // 获取收获地址
+        this.getAddressInfo()
     },
     methods:{
+        getAddressInfo() {
+            // 获取相应的用户id
+            let userId = this.$store.state.userId
+            userId = 'u103'
+            request.getAddressId(userId).then(res =>{
+                console.log('res',res)
+            })
+        },
         addAddress() {
             console.log(2222)
             // 显示新增表单
@@ -56,6 +69,12 @@ export default {
         },
         sureAdd() {
             // 确定新增，确定的时候调取接口，然后刷新下面的数字
+        },
+        backPurchase() {
+            // console.log(11111)
+            this.$router.push(
+                {name:'purchaseInfo'}
+            )
         }
     }
 }
@@ -64,15 +83,20 @@ export default {
 .user-address {
     width: 600px;
     margin: 0 auto;
+    margin-top: 150px;
     .address-head {
         height: 50px;
         padding: 0 20px;
         line-height: 50px;
         display: flex;
         justify-content: space-between;
-        background-color: yellow;
+        background-color: #fff;
+        margin-bottom: 10px;
         .add-address {
-            color: #3883ff;
+            // color: #3883ff;
+            color:red;
+            font-weight: 700;
+            font-size: 14px
         }
         .add-address:hover {
             cursor: pointer;
@@ -83,8 +107,8 @@ export default {
                 box-sizing: border-box ;
                 padding: 10px 20px;
                 height: 80px;
-                background-color: skyblue;
-                border: 1px solid #ccc;
+                background-color: #fff;
+                // border: 1px solid #ccc;
                 margin-bottom: 10px;
                 .address-user {
                     display: flex;
@@ -93,6 +117,10 @@ export default {
                     // border-bottom: 1px solid #ccc;
                 }
             }
+        }
+        .back-Purchase {
+            cursor: pointer;
+            font-size: 14px;
         }
 }
 </style>

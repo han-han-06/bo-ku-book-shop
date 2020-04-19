@@ -1,5 +1,6 @@
 <template> 
-    <div class="shopping-cart">
+    <div>
+        <div class="shopping-cart">
         <!-- 购物车页面,分为头部，下面做成卡片的形式 -->
         <div class="cart-header">
             <!-- 头部 -->
@@ -7,7 +8,7 @@
                 <div class="registered-heade_content">
                     <div class="heade_content">
                         <div class="boku-logo">
-                        <img class="boku-logo_img" src="../assets/images/logo.jpg">
+                        <!-- <img class="boku-logo_img" src="../assets/images/logo.jpg"> -->
                     </div>
                     <div class="boku-zhuce">欢迎登录</div>
                     </div>
@@ -38,29 +39,35 @@
                     </div>
                     <!-- 图片和信息 -->
                     <div class="car-img_info">
+                        <!-- 购买商品图片 -->
                         <div class="car-img">
-                            <img src="../assets/images/order.jpg">
+                            <img :src="item.mainBookPicture">
+                            <!-- <img src="../assets/images/order.jpg"> -->
                         </div>
+                        <!-- 图书信息 -->
                         <div class="img-info_car">
-                            这个是图片信息这个烦得很放到很干是是图片信息这个是图片简介
+                            {{item.bookDetail}}
                         </div>
                     </div>
                     <!-- 单价 -->
                     <div style="margin-left:114px">
-                        <span>￥ {{item.singalPrice}}</span>
+                        <span>￥ {{item.bookNewPrice}}</span>
                     </div>
                     <!-- 数量 -->
                     <div class="car_num" style="margin-left:114px" >
                         <!-- ++ -->
-                        <span class="el-icon-circle-plus-outline" @click="tianJia(item.num,index)"></span>
+                        <span class="el-icon-circle-plus-outline" @click="tianJia(item.bookCount,index)"></span>
                         <!-- 购买数量 -->
-                        <span class="num-inp">{{item.num}}</span>
+                        <span class="num-inp">{{item.bookCount}}</span>
                         <!-- 减减 -->
-                        <span class="el-icon-remove-outline" @click="subNum(item.num,index)"></span>
+                        <span class="el-icon-remove-outline" @click="subNum(item.bookCount,index)"></span>
                     </div>
                     <!-- 总价,小计 -->
                     <div style="margin-left:171px">
                         ￥ {{item.totalPrice}}
+                    </div>
+                    <div class="shanchu">
+                        <el-button class="shanchu-btn" type="primary" icon="el-icon-delete" @click="deleteCarInfo(item,index)"></el-button>
                     </div>
                 </div>
                 </div>
@@ -91,9 +98,12 @@
                 </div>
             </div>
         </div>
+        </div>
+        <BookStoreFooter></BookStoreFooter>
     </div>
 </template>
 <script>
+import request from '../api/api'
 export default {
     data() {
         return {
@@ -112,6 +122,7 @@ export default {
     },
     computed:{
         // 总共选中的商品数
+        // 
         selectedNum:function() {
             let a = 0
             this.carInfo.map(el =>{
@@ -135,23 +146,30 @@ export default {
             })
             // 把每个产品的总价加起来，就好
             checkArr.map(el => {
-                total = total + el.singalPrice*el.num
+                total = total + el.bookNewPrice*el.bookCount
             })
             return total
         }
     },
     created() {
-        this.carInfo.map(el =>{
-            // 是否选中
-            el.isCheck = false
-            // 选择数量
-            el.num = 1
-            el.singalPrice = 20
-            el.totalPrice = el.singalPrice*el.num
-            // el.totalPrice = 20
-        })
+        // 获取购物车里面的内容
+        this.getCarInfo()
     },
     methods:{
+        getCarInfo() {
+            let customId = this.$store.state.userId
+            customId = 'u106'
+            request.getCarMess(customId).then(res =>{
+                // console.log('购物车内容',res)
+                this.carInfo = res
+                this.carInfo.map(el =>{
+                    // 是否选中
+                    el.isCheck = false
+                    // 图书总价
+                    el.totalPrice = el.bookNewPrice*el.bookCount
+                })
+            })
+        },
          // 每页多少条
         handleSizeChange(val) {
             // console.log('每页多少条',val)，真的烦
@@ -166,20 +184,42 @@ export default {
         subNum(val,index) {
             if(val > 1) {
                 let con =  this.carInfo[index]
-                con.num = con.num-1
+                con.bookCount = con.bookCount-1
                 this.$set(this.carInfo,index,con)
                 this.getTotalPrice(index)
             }
         },
         // 结算按钮
         onSettlement() {
-            // 把信息获取到，然后走接口去结账，
-            // 把选中的id和数量给他
-            this.$commonUtils.setMessage('success','结算成功')
-            // 跳转到订单页面
-            this.$router.push(
-                {name:'individualOrders'}
-            )
+            // 校验一下是否选中商品，如果没有选中，则提示
+            let flag =  this.carInfo.some(el =>{
+                if(el.isCheck) {
+                    return true
+                }
+            })
+            if(flag) {
+                // 跳转到结账页面，
+                // 所选图书id
+                let bookIds = []
+                this.carInfo.map(el =>{
+                    if(el.isCheck) {
+                        bookIds.push(el.bookId)
+                    }
+                })
+                // 用户id
+                let userId  = this.$store.state.userId
+                // let data = {bookIds,userId}
+                this.$router.push(
+                    {name:'purchaseInfo',
+                    params:{
+                        bookIds,
+                        userId
+                    }}
+                )
+            }else {
+                this.$commonUtils.setMessage('warning','请选择结账商品')
+            }
+            
         },
         // 选中状态的切换
         changeCheck(val,index) {
@@ -190,7 +230,7 @@ export default {
         // 数量加加
         tianJia(val,index) {
             let con =  this.carInfo[index]
-            con.num = con.num+1
+            con.bookCount = con.bookCount+1
             this.$set(this.carInfo,index,con)
             this.getTotalPrice(index)
         },
@@ -207,9 +247,22 @@ export default {
         getTotalPrice(index) {
             let con = this.carInfo[index]
             // 获取相应的总价
-            con.totalPrice = con.singalPrice*con.num
+            con.totalPrice = con.bookNewPrice*con.bookCount
             this.$set(this.carInfo,index,con)
-        }         
+        },
+        // 购物车删除事件
+        deleteCarInfo(item,index) {
+            // 获取图书id
+            let bookId = item.bookId
+            // 获取顾客id
+            let customId = this.$store.state.userId
+            customId = 'u103'
+            // let data = {}
+            // 删除事件
+            request.deleteCarInfo(customId,bookId).then(res =>{
+                this.$commonUtils.setMessage('success','删除成功')
+            })
+        },
     }
 }
 </script>
@@ -266,7 +319,7 @@ export default {
         box-sizing: border-box;
         height: 40px;
         line-height: 40px;
-        background-color: #f5f5f5;
+        background-color: #fff;
         font-size: 14px;
         font-weight: 700;
     }
@@ -286,7 +339,7 @@ export default {
             height: 40px;
             line-height: 40px;
             padding-left: 10px;
-            background-color: #f5f5f5;
+            background-color: #fff;
             box-sizing: border-box;
             // border: 1px solid #ccc;
             .check-all {
@@ -297,6 +350,7 @@ export default {
         .cart-content_center {
             padding-left: 20px;
             box-sizing: border-box;
+            
             // border: 1px solid chartreuse;
             .cart-all_list {
                 // height: 500px;
@@ -308,6 +362,7 @@ export default {
                 border: 1px solid #ccc;
                 margin-top: 20px;
                 padding: 20px 0;
+                background-color: #fff;
                 box-sizing: border-box;
                 // height: 150px;
                 .car-check {
@@ -320,11 +375,15 @@ export default {
                         width: 80px;
                         height: 80px;
                         // border:2px solid yellow;
+                        img {
+                            width: 100%;
+                        }
                     }
                     .img-info_car {
                         width: 300px;
                         // height:150px;
                         // border: 1px solid #ccc;
+                        font-size: 14px;
                         box-sizing: border-box;
                     }
                     
@@ -336,6 +395,14 @@ export default {
                     border: 1px solid #ccc;
                     width: 50px;
                     display: inline-block;
+                }
+            }
+            .shanchu {
+                margin-left: 60px;
+                .shanchu-btn {
+                    background-color: #fff;
+                    border: #fff;
+                    color: red;
                 }
             }
         }
@@ -359,12 +426,17 @@ export default {
             // background-color: pink;
         }
     }   
+    
     .jiesuan-btn {
         height: 100%;
         width: 110px;
         line-height: 60px;
         text-align: center;
         background-color: red;
+        color: #fff;
+    }
+    .jiesuan-btn:hover {
+        cursor: pointer;
     }
 }
 

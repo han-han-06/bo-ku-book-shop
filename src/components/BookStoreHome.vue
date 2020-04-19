@@ -11,7 +11,7 @@
             <el-main>
                 <!-- 轮播 -->
                 <div class="lunbo">
-                    <BookLunBo>轮播</BookLunBo>
+                    <!-- <BookLunBo>轮播</BookLunBo> -->
                 </div>
                 <!-- 这个盒子是三个书的分类 -->
                 <div v-if="hiddenFenLei">
@@ -23,14 +23,14 @@
                     </div>
                     <!-- 特价图书 -->
                     <div class="tejia">
-                        <BookJingXuan
+                        <!-- <BookJingXuan
                         :arrList='arrList'
-                        ></BookJingXuan>
+                        ></BookJingXuan> -->
                     </div>
                     <div class="tejia">
-                        <BookJingXuan
+                        <!-- <BookJingXuan
                         :arrList='arrList'
-                        ></BookJingXuan>
+                        ></BookJingXuan> -->
                     </div>
                 </div>
                 <!-- 选中某一个盒子的时候展示某一个分类 -->
@@ -47,9 +47,9 @@
         </el-container>
         
     </div>
-    <div class="aaaa">
+    <div class="">
             <BookStoreFooter></BookStoreFooter>
-        </div>
+    </div>
     </div>
 </template>
 
@@ -75,23 +75,33 @@ export default {
             hiddenFenLei:true,
             // 分类id
             categoryId:'',
-            categoryList:[]
+            categoryList:[],
+            pageInfo:{
+                page:1,
+                size:20
+            },
+            userId:''
         }
     },
     created() {
-        console.log('params.id',this.$route.params)
+        // 获取id
+        this.userId = this.$store.dispatch.userId
+        // 一开始初始化的时候我得获取到他们的分类
         this.hiddenFenLei = true
+        // 我需要请求一下所有的数据么
         // 根据图书类别查询相应的图书
         this.getClassifyBooks()
+        // 
     },
     methods:{
         getClassifyBooks() {
             // 图书类别
-            let category = 1
-            request.getDiffBook(category).then(res =>{
-                console.log('图书信息',res)
-                this.classifyBooks = res
-            })
+            // let category = 1
+            let userId = this.userId
+            // request.getDiffBook({userId}).then(res =>{
+            //     console.log('图书信息',res)
+            //     this.classifyBooks = res
+            // })
         },
         // 选中某一分类的时候
         selectCate(value) {

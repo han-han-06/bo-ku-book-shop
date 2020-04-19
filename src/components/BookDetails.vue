@@ -1,39 +1,51 @@
 <template>
-<!-- 每本图书详情页 -->
+<div>
+    <div class="cart-header">
+            <!-- 头部 -->
+            <div class="registered-head">
+                <div class="registered-heade_content">
+                    <div class="heade_content">
+                        <div class="boku-logo">
+                        <!-- <img class="boku-logo_img" src="../assets/images/logo.jpg"> -->
+                    </div>
+                    <div class="boku-zhuce">欢迎登录</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- 每本图书详情页 -->
     <div class="book-info">
         <!-- 上部分，放书的东西 -->
         <div class="book-info—top">
             <!-- 每本书的图片左边 -->
             <div class="info—top_left">
-                <div class="info-img">
-                    这里放图片
-                    <!-- <el-button @click="aaa"></el-button> -->
-                    <el-upload
-                        class="upload-demo"
-                        action="https://jsonplaceholder.typicode.com/posts/"
-                        :on-preview="handlePreview"
-                        :on-remove="handleRemove"
-                        :before-remove="beforeRemove"
-                        multiple
-                        :limit="3"
-                        :on-exceed="handleExceed"
-                        :file-list="fileList">
-                    <el-button size="small" type="primary">点击上传</el-button>
-                    <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-                    </el-upload>
-                    <!-- <img :src="bookInfo.src"> -->
+                <div class="big-img">
+                    <!-- 应该给个宽和高，要不他动不了 -->
+                    <!-- <pic-zoom :url="bookInfo.bookPictures[0].pictureUrl" :scale="2"></pic-zoom> -->
                 </div>
             </div>
             <!-- 每本书的右边，分为三部分，简介，（价格，作者，），（加入购物车） -->
             <div class="info—top_right">
                 <div class="book-introduction">
-                    <h5 class="book-introduction_title">这是这的题目</h5>
-                    <!-- 这里应该做一个展开更多的功能，这样才好店 -->
-                    <h6 class="book-introduction_con">这里放化妆产品的使用方法</h6>
+                    <!-- 这是这的题目 -->
+                    <h5 class="book-introduction_title">{{bookInfo.bookName}}</h5>
+                    <!-- 这里放化妆产品的使用方法 -->
+                    <h6 class="book-introduction_con">
+                        <!-- 作者 -->
+                        <span style="color:#005aa0">{{bookInfo.bookAuthor}}</span> 
+                        <!-- 出版社 -->
+                        <span style="color:#666">{{bookInfo.bookPublish}}</span>
+                        <!-- 出版时间 -->
+                        <span style="color:#666">{{bookInfo.bookPublishTime}}</span>
+                    </h6>
+                    <!-- 图书内容  -->
+                    <div class="neir" style="color:#999">
+                        {{bookInfo.bookDetail}}
+                    </div>
                 </div>
                 <div class="bool-price">
                     <!-- 价格 -->
-                    <span>当前价格：29元</span>
+                    当前价格：<span style="color:red">￥ {{bookInfo.bookNewPrice}}</span>元
                 </div>
                 <div class="shop-car">
                     <!-- 购物车 -->
@@ -47,41 +59,51 @@
                     </div>
                     <!-- 购买数量{{purchaseQuantity}} -->
                     <div class="add-btn">
-                        <el-button @click="addCart">加入购物车</el-button>
-                        <el-button @click="immediateBuy">立即购买</el-button>
+                        <div @click="addCart" class="join-car">加入购物车</div>
+                        <div @click="immediateBuy" class="immedia-buy">立即购买</div>
                     </div>
                 </div>
+                <!--  -->
             </div>
         </div>
         <!-- 中间每本书的图片，详情啥的 -->
         <div class="book-info—middle">
-            这里就是放一堆图片啥的,代表详情
-
+            <!-- 产品特色 -->
+            <span style="">
+                <img src="../assets/images/tese.png">
+                <img class='hengxian' src="../assets/images/line.jpg">
+            </span>
+            <!-- 图片详情 -->
+            <span style="margin-left:20px">
+                <!-- <img src="../assets/images/detail.jpg"> -->
+            </span>
         </div>
         <!--下部分，评论区，放各种言论，只是展示的作用，没有别的作用  -->
+        <!--  -->
         <!-- 评论应该分为头部，内容和分页 -->
         <div class="book-info_comments">
             <!-- 分为全部，好评，差评，都可以点击的那种，还有晒图么，到时候商量一下去 -->
             <div class="comments-head">
-                <div>全部（2222）</div>
-                <!--  -->
-                <div class="pinglun">好评（222）</div>
-                <div>差评（555）</div>
+                <!-- <div>全部（2222）</div> -->
+                <!-- <div class="pinglun">好评（222）</div>
+                <div>差评（555）</div> -->
             </div>
             <div class="comments-content">
                 <div v-for="(item,index) in commentsList" :key="index" class="comments-info">
                     <div class="block">
                     <el-rate
-                        v-model="value2"
+                        v-model="item.commentStar"
                         :colors="colors">
                     </el-rate>
+                    <!-- 这是日期 -->
+                    <div class="comment-riqi">
+                        <span>{{item.commentTime}}</span>
+                    </div>
                     </div>
                     <div>
-                        这是评论这是评论这是评论这是评论这是评论这是评论
+                        {{item.commentContent}}
                     </div>
-                    <div>
-                        这是日期
-                    </div>
+                    <!-- 这是日期 -->
                 </div>
             </div>
             <div class="comments-foot">
@@ -99,17 +121,18 @@
             </div>
         </div>
     </div>
+    <!-- -->
+    <BookStoreFooter></BookStoreFooter>
+</div>
 </template>
 <script>
+import request from '../api/api'
+import PicZoom from 'vue-piczoom'
 export default {
     data() {
         return {
             // 每本书的详情
-            bookInfo:{
-                src: require('../assets/images/book1.png'),
-                title:'图书详情',
-                id:6,
-            },
+            bookInfo:{},
             // 加购的数量
             purchaseQuantity:0,
             // 评论总数
@@ -118,22 +141,104 @@ export default {
                 page:1,
                 size:20
             },
-            commentsList:[1,2,3,4,5,6,7,8],
+            commentsList:[],
             // 这里绑定的值跟随星走，
             value2: null,
             // 等同于 { 2: '#99A9BF', 4: { value: '#F7BA2A', excluded: true }, 5: '#FF9900' }
-            colors: ['#99A9BF', '#F7BA2A', '#FF9900']  
+            colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
+            // 图书id
+            id:"",
+            // 
         }
     },
+    watch:{
+        value2:function(value) {
+            console.log('value',value)
+        }
+    },
+    created() {
+        console.log(33343)
+        // 获取图书id
+        this.id = this.$store.state.bookId||'b108'
+        console.log('id',this.id)
+        // 获取图书详情
+        this.getBook()
+        // 获取图书相关的评论
+        this.getComInfo()
+        // 根据id查询单条数据
+        this.commentsList.map(el =>{
+            // 
+            el.starLevel = 1
+        })
+        // 获取评论
+        this.getComments()
+    },
+    // 引入放大镜
+    components: {
+        PicZoom
+    },
     methods:{
+        // 获取评论
+        getComments() {
+            let bookId = this.id
+            // 获取图书评论
+            request.viewComments(bookId).then(res =>{
+                // 获取相应的评论，去掉那句话
+                this.commentsList = res
+            })  
+            this.commentsList = [
+                {
+                    bookId:'b108',
+                    commentContent:'这本书真的很不错',
+                    commentPerson:'莫某某',
+                    commentStar:1,
+                    commentTime:"2020-01-19"
+                }
+            ]
+        },
+        // 获取单条数据
+        getBook() {
+            request.getBookDetail(this.id).then(res =>{
+                console.log('res图书详情',res)
+                this.bookInfo = res
+            })
+        },
+        // 获取这本书的评论
+        getComInfo() {
+            request.getBookCom(this.id).then(res =>{
+                console.log('图书评论',res)
+            })
+        },
         // 加入购物车
         addCart() {
+            // count数
+            let bookCount = this.purchaseQuantity
+            if(!bookCount) {
+                this.$commonUtils.setMessage('warning','请选择加购数量')
+                return
+            }
             // 这里应该先校验一下(比如是否登录啥的，然后再加入购物车。如果没登录，应该弹出登录/注册的页面)
-            // 
+            if(this.$store.state.userId) {
+                // 获取用户id
+                let customId = this.$store.state.userId
+                customId = "u106"
+                // 获取图书id
+                let bookId = this.id
+                let data = {bookCount,customId,bookId}
+                request.addShopCar(data).then(res =>{
+                    console.log('加购成功')
+                    this.$commonUtils.setMessage('success','加入成功')
+                })
+            }else {
+                this.$commonUtils.setMessage('warning','请先登录')
+            }
         },
         // 立即购买
         immediateBuy() {
             // 先校验。没问题这里需要跳转到订单那里么
+            this.$router.push(
+                {name:'purchaseInfo'}
+            )
         },
         // 减数量
         subNum() {
@@ -149,9 +254,7 @@ export default {
             console.log('当前页',val)
             this.pageInfo.page = val
         },
-        aaa() {
-
-        }
+        // 
     }
 }
 </script>
@@ -160,27 +263,78 @@ export default {
     margin: 0;
     padding: 0;
 }
+
+.registered-head {
+    height: 120px;
+    width: 100%;
+    position: fixed;
+    background-color: #fff;
+    z-index: 6;
+    left: 0;
+    top: 0;
+    box-shadow:0px 5px 10px 0px #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    // 
+    .registered-heade_content {
+        height: 100%;
+        width: 1200px;
+        display: flex;
+        margin: 0 auto;
+        justify-content: space-between;
+        .heade_content {
+            display: flex;
+            .boku-logo { 
+            margin-right: 20px;
+            height: 100%;
+            font: 20px Arial,Verdana;
+            color: #EB4C44;
+            line-height: 150px;
+            .boku-logo_img {
+                margin-top: 43px;
+            }
+        } 
+        .boku-zhuce {
+            font: 20px Arial,Verdana;
+            color: #666;
+            margin-top: 70px;
+        }
+        }
+    }
+}
 .book-info {
     width: 1200px;
     margin: auto;
-    height: 1200px;
+    // height: 1200px;
+    margin-top: 200px;
     border: 1px solid #ccc;
     .book-info—top {
         display: flex;
+        justify-content: space-between;
         background-color: #fff;
         .info-img {
             // background-color: pink;
-            border: 1px solid pink;
+            // border: 1px solid pink;
             height: 350px;
             width: 350px;
         }
         .info—top_right {
+            width: 100%;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
+            // background-color: pink;
             .book-introduction {
-                border: 1px solid gold;
+                padding-top: 10px;
+                width: 100%;
+                // border: 1px solid gold;
                 .book-introduction_title {
                     margin: 0 5px;
+                    color: #666;
+                    font-weight: 700;
+                }
+                .neir {
+                    padding: 0 10px 10px 10px;
                 }
                 .book-introduction_con {
                     margin: 10px 5px;
@@ -188,12 +342,16 @@ export default {
             }
             .bool-price {
                 width: 100%;
-                height: 100px;
-                border: 1px solid greenyellow;
+                padding: 20px 0;
+                padding-left: 15px;
+                box-sizing: border-box;
+                border: 1px solid #ccc;
             }
             .shop-car {
-                border: 1px solid steelblue;
+                // border: 1px solid steelblue;
                 .add-num {
+                    padding-left: 15px;
+                    padding-top: 10px;
                     .el-icon-circle-plus-outline {
                         // font-size: 16px;
                         padding: 0 5px;
@@ -215,7 +373,41 @@ export default {
                         box-sizing: border-box;
                         border-radius: 3px;
                         padding-left: 5px;
-                        // 位置的明天总
+                    }
+                }
+                .add-btn {
+                    margin-top: 20px;
+                    margin-bottom: 20px;
+                    display: flex;
+                    padding-left: 15px;
+                    // 加入购物车
+                    .join-car {
+                        width: 90px;
+                        font-size: 15px;
+                        text-align: center;
+                        height: 20px;
+                        padding: 5px 0;
+                        border: 1px solid #ccc;
+                        margin-right: 10px;
+                        // 
+                    }
+                    .join-car:hover {
+                        cursor: pointer;
+                    }
+                    .immedia-buy:hover {
+                        cursor: pointer;
+                    }
+                    // 立即购买按钮
+                    .immedia-buy {
+                        width: 70px;
+                        text-align: center;
+                        height: 20px;
+                        font-size: 14px;
+                        color: #fff;
+                        padding: 5px 0;
+                        border-radius: 3px;
+                        background-color: red;
+                        border: 1px solid #ccc;
                     }
                 }
             }
@@ -223,27 +415,59 @@ export default {
     }
     .book-info—middle {
         margin-top: 20px;
-        border: 1px solid aquamarine;
-        height: 200px;
+        // border: 1px solid aquamarine;
+        display: flex;
+        margin-left: 15px;
+        flex-direction: column;
+        .hengxian {
+            margin-bottom: 2px;
+            margin-left: -12px;
+        }
+        // height: 200px;
     }
     .book-info_comments {
         margin-top: 20px;
         width: 100%;
-        border: 1px solid wheat;
+        // margin-left: 15px;
+        // border: 1px solid wheat;
         .comments-head {
             display: flex;
+            height: 60px;
+            line-height: 60px;
+            background-color: #f7f7f7;
             padding-left: 20px;
             .pinglun {
                 margin: 0 20px;
             }
         }
         .comments-content {
+            padding-left: 15px;
+            box-sizing: border-box;
+            .block {
+                display: flex;
+                padding: 10px 0;
+            }
             .comments-info {
-                height: 200px;
+                // height: 200px;
+                padding: 5px 0 20px 5px;
+                background-color: #fff;
                 border-bottom: 1px solid #ccc;
+                margin-bottom: 10px;
+            }
+            .comment-riqi {
+                color: #cccccc;
+                margin-left: 40px;
             }
         };
     }
-    
+    .comments-foot {
+        padding: 20px 0;
+        text-align: right;
+    }
+    .big-img  {
+        height: 300px;
+        width: 300px;
+        border: 1px solid #ccc;
+    }
 }
 </style>

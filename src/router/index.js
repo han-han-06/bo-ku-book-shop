@@ -20,6 +20,8 @@ const userAddress = ()=>import('@/components/UserAddress')
 const individualOrders =()=>import('@/components/IndividualOrders')
 const addAddress = ()=>import('@/components/AddAddress')
 const tableRegister = ()=> import('@/components/BackManagement/TableRegister')
+const bookComment = ()=> import('@/components/BookComment')
+const purchaseInfo = ()=>import('@/components/PurchaseInfo')
 Vue.use(Router)
 const VueRouterPush = Router.prototype.push 
 Router.prototype.push = function push (to) {
@@ -59,6 +61,11 @@ export default new Router({
       component:bookDetails
     },
     {
+      path:'/bookComment',
+      name:'bookComment',
+      component:bookComment
+    },
+    {
       path:'/bookShopCart',
       name:'bookShopCart',
       component:bookShopCart
@@ -68,6 +75,12 @@ export default new Router({
       name:'purchasePage',
       component:purchasePage,
       children:[
+        // 默认显示结账主页
+        {
+          path:"",
+          name:'purchaseInfo',
+          component:purchaseInfo
+        },
         // 使用地址
         {
           path:'userAddress',
@@ -80,6 +93,12 @@ export default new Router({
           name:'addAddress',
           component:addAddress
         }
+        // 新增信息主页
+        // {
+        //   path:"purchaseInfo",
+        //   name:'purchaseInfo',
+        //   component:purchaseInfo
+        // }
       ]
     },
     // 下面是后台管理页面

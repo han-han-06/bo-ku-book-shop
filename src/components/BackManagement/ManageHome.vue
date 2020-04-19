@@ -25,6 +25,7 @@
                 <div>
                     <!-- 表格 -->
                     <TablePage
+                    :loading='tableLoading'
                     :tableData='tableData'
                     @on-modify='onModify'
                     @on-delete='onDelete'></TablePage>
@@ -68,13 +69,14 @@
             <ModifyDrawer
             v-if='modifyDrawer'
             :ruleForm='modifyFrom'
+            @close-draw='closeDraw'
             @close-modify='closeModify'></ModifyDrawer>
         </el-drawer>
         <el-dialog
             title="提示"
             :visible.sync="deleteDialog"
             width="30%">
-            <span>这是一段信息</span>
+            <span>确定删除么</span>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="deleteDialog = false">取 消</el-button>
                 <el-button type="primary" @click="sureDelete" :loading='delLoading'>确 定</el-button>
@@ -100,7 +102,7 @@ export default {
                 size:20,
                 page:1,
             },
-            total:22,
+            total:0,
             // 修改表單
             modifyFrom:{},
             tableData:[],
@@ -110,22 +112,37 @@ export default {
             // 删除按钮loading
             delLoading:false,
             // 商家id
-            adminId:''
+            adminId:'',
+            // 获取每本书的bookId
+            bookId:'',
+            // 表格loading
+            tableLoading:false
         }
     },
     created() {
-        this.adminId = this.$store.state.adminId||'a103'
+        this.adminId = this.$store.state.adminId
         this.adminId = 'a103'
+        // console.log('id',this.adminId)
+        // this.adminId = 'a103'
         // 获取到当前列表
         this.getList()
     },
     methods:{
         getList() {
-            let data = {...this.pageInfo,adminId:this.adminId}
+            // 
+            this.tableLoading = true
+            let {page,size} = this.pageInfo
+            let adminId = this.adminId
+            // let data = {...this.pageInfo,adminId:this.adminId}
             // data里面还应该有人员id
-            request.getListInfo(data).then(res =>{
-                this.tableData = res
-                console.log('res',res)
+            // 
+            request.getListInfo(page,size,adminId).then(res =>{
+                // console.log('res',res)
+                this.tableData = res.bookVOList
+                this.total = res.count
+                setTimeout(()=>{
+                    this.tableLoading = false
+                },300)
             })
         },
         addBooks() {
@@ -134,10 +151,10 @@ export default {
         },
         // 点击修改
         onModify(row) {
-            console.log('row',row)
+            // console.log('row',row)
             // 获取id
             this.bookId = row.bookId
-            console.log(222)
+            // console.log(222)
             // 进行数据的请求
             request.getModify(this.bookId).then(res =>{
                 this.modifyFrom = res
@@ -148,8 +165,9 @@ export default {
         },
         // 点击删除
         onDelete(row) {
+            // console.log('row',row)
             // 获取id
-            this.id = row.id
+            this.bookId = row.bookId
             // 打开删除弹窗
             this.deleteDialog = true
         },
@@ -161,8 +179,9 @@ export default {
             // 关闭新增侧滑
             this.addDrawer = false
         },
+        // 查询
         onSearch() {
-
+            
         },
          // 每页多少条
         handleSizeChange(val) {
@@ -182,18 +201,34 @@ export default {
         sureDelete() {
             this.delLoading = true
             // 调取接口
-            this.deleteBook(this.id).then(res =>{
+            request.deleteBook(this.bookId).then(res =>{
+                // 关闭按钮loading
                 this.delLoading = false
+                // 关闭弹窗
+                this.deleteDialog = false
+                this.$commonUtils.setMessage('success','删除成功')
                 // 刷新列表
                 this.getList()
+            }).catch(err => {
+                this.delLoading = false
+                // this.deleteDialog = false
             })
         },
         closeDrawer() {
             // 关闭新增侧滑。
             this.addDrawer = false
+            
             // 刷新列表
             this.getList()
-        }
+        },
+        // 关闭修改侧滑
+        closeDraw() {
+            this.modifyDrawer = false
+            this.$commonUtils.setMessage('success','修改成功')
+            // 刷新列表
+            this.getList()
+        },
+        // 
     }
 }
 </script>
@@ -243,7 +278,6 @@ export default {
         // display: flex;
         // flex-direction: column;
         // align-items:center;
-        // 
     }
     
 </style>

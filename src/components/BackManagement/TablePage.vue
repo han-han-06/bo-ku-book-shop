@@ -5,7 +5,12 @@
         <el-table
             :data="tableData"
             border
+            v-loading="loading"
+            element-loading-text="拼命加载中"
+            element-loading-spinner="el-icon-loading"
+            element-loading-background="rgba(255, 255, 255, 0.4)"
             :show-overflow-tooltip='true'
+            height="700px"
             style="width: 100%">
             <el-table-column
                 prop="bookName"
@@ -16,7 +21,7 @@
                 fixed
                 prop="bookAuthor"
                 label="作者"
-                width="100">
+                width="150">
             </el-table-column>
             <el-table-column
                 prop="bookNewPrice"
@@ -71,6 +76,11 @@ export default {
         tableData:{
             type:Array,
             default:() => []
+        },
+        // 表格loading
+        loading:{
+            type:Boolean,
+            default:false
         }
     },
     methods:{
@@ -81,7 +91,8 @@ export default {
         // 點擊刪除功能
         onDelete(row) {
             this.$emit('on-delete',row)
-        }
+        },
+        // 
     }
 }
 </script>

@@ -1,97 +1,18 @@
 <template>
 <!-- 结账页面 -->
-    <div class="purchase-page">
-        <div>
-            <div class="purchase-page_head">
-                <!--  -->
-                <div>
+    <div>
+        <!-- 头部 -->
+        <div class="registered-head">
+            <div class="registered-heade_content">
+                <div class="heade_content">
+                    <div class="boku-logo">
                     <!-- <img class="boku-logo_img" src="../assets/images/logo.jpg"> -->
-                    <span>结算页</span>
                 </div>
-            </div>
-            <router-view v-if="!bbb"></router-view>
-            <!-- 上面有个logo的页面头部 -->
-            <p>填写并核对相应的订单信息</p>
-            <div class="purchase-page_content" v-if="bbb">
-                
-                <!-- 收货人信息 -->
-                <div class="purchase-consignee">
-                    <div class="consignee-per">
-                        <span>收货人信息</span>
-                        <span @click="addAddress">新增收获地址</span>
-                    </div>
-                    <div class="consignee-content">
-                        <div>
-                            <!-- 放用户名和手机号 -->
-                            <div>
-                                <span class="buy-name">王涵</span>
-                                <span>15511351896</span>
-                            </div>
-                            <!-- 放具体的地址 -->
-                            <div class="juti-address">
-                                <span>河北省唐山市路北区四十八号小区</span>
-                            </div>
-                        </div>
-                    </div>
+                <!-- <div class="boku-zhuce">欢迎登录</div> -->
                 </div>
-                <!-- 支付方式 -->
-                <div class="purchase-payment">
-                    <p class="">
-                        支付方式
-                    </p>
-                    <div>
-                        <el-button>微信支付</el-button>
-                    <el-button>支付宝支付</el-button>
-                    </div>
-                </div>
-                <!-- 这里放送货清单 -->
-                <div class="consignment-inventory">
-                    <div class="consignment-inventory_head">
-                        <div>送货清单</div>
-                        <div>价格说明</div>
-                        <div>返回购物车</div>
-                    </div>
-                    <div class="consignment-inventory_content">
-                        <div >
-                            <!-- 商家说明 -->
-                            <p>商家：涵啊涵中日用品店</p>
-                            <!-- 图片和相应的书的书名 -->
-                            <div class="inventory_content">
-                                <div class="inventory">
-                                    <!-- 这个左边房图片 -->
-                                    <div class="inventory-img">
-                                        <img src="../assets/images/book1.png">
-                                    </div>
-                                    <!-- 这个右边放这个书的名称和作者 -->
-                                    <div class="inventory-book">
-                                        <span>这是一本书的书名</span>
-                                        <span>这是作者</span>
-                                    </div>
-                                </div>
-                                <!-- 下面这块放价格 -->
-                                <div class="jiage">
-                                    <span>￥200.00</span>
-                                </div>
-                                <!-- 放数量 -->
-                                <!--  -->
-                                <div class="shulaing">
-                                    <span>x2</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--  -->
-                    <!-- 每个详情页是不是也得显示商家信息啊，对，还得显示商家信息，麻烦， -->
-                </div>
-                <!-- 结算按钮 -->
-                <div class="purchase-confirm_btn">
-                    <el-button @click="aaa">立即结算</el-button>
-                </div>
-                <!-- 收货人信息这块还有新增收获地址，新增收货地址这块咋处理呢，我也不知道 -->
-                <!-- 下面的内容分为两个盒子，收货人信息，支付方式，支付成功跳转到支付成功页面，
-                这里应该有个路由才好，如果不加路由的话，用v-if么，v-if也可以，接收一下返回值就可以了，收获地址这块，他新增了就跳到相应的新增那快去 -->
             </div>
         </div>
+            <router-view class="purchase"></router-view>
     </div>
 </template>
 <script>
@@ -100,22 +21,12 @@ import request from '../api/api'
 export default {
     data() {
         return {
-            bbb:true
+            // bbb:true
         }
     },
     created() {
-        // this.bbb = true
-        // this.getInfoList()
     },
     methods:{
-        getInfoList() {
-            request.getInfo().then(res =>{
-                console.log('res',res)
-            })
-        },
-        aaa() {
-            console.log(222)
-        },
         // 新增收获地址。跳转到收获地址页面
         addAddress() {
             // 跳转到收获地址页面
@@ -123,20 +34,71 @@ export default {
             this.$router.push({
                 name:"userAddress",
             })
-            // 
         }
     }
     
 }
 </script>
 <style scoped lang='scss'>
+.registered-head {
+    height: 120px;
+    width: 100%;
+    position: fixed;
+    background-color: #fff;
+    left: 0;
+    top: 0;
+    box-shadow:0px 5px 10px 0px #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    // 
+    .registered-heade_content {
+        height: 100%;
+        width: 1200px;
+        display: flex;
+        margin: 0 auto;
+        justify-content: space-between;
+        .heade_content {
+            display: flex;
+            .boku-logo { 
+            margin-right: 20px;
+            height: 100%;
+            font: 20px Arial,Verdana;
+            color: #EB4C44;
+            line-height: 150px;
+            .boku-logo_img {
+                margin-top: 43px;
+            }
+            } 
+        .boku-zhuce {
+            font: 20px Arial,Verdana;
+            color: #666;
+            margin-top: 70px;
+        }
+        }
+        
+    }
+}
+.purchase {
+    margin-top: 150px;
+
+}
 .purchase-page {
     width: 100%;
+    margin-top: 140px;
     height: 800px;
     .purchase-page_head {
         width: 100%;
         height: 100px;
         background-color: pink;
+    }
+    .fill-order {
+        width: 800px;
+        margin: auto;
+        height: 50px;
+        background: #fff;
+        line-height: 50px;
+        padding-left: 15px;
+        box-sizing: border-box;
     }
     .purchase-page_content {
         // height: 800px;
@@ -146,55 +108,89 @@ export default {
         padding: 20px;
         // background-color: #ccc;
         .purchase-consignee {
+            background-color: #fff;
+            padding-left: 15px;
             .consignee-per {
-                padding: 0 20px;
+                padding: 10px 20px 10px 0;
                 box-sizing: border-box;
                 display: flex;
                 justify-content: space-between;
+                .xinzeng-address {
+                    color: #666;
+                }
+                .xinzeng-address:hover {
+                    color: red;
+                    cursor: pointer;
+                }
             }
             .consignee-content {
                 height: 80px;
                 margin-top: 10px;
                 // background-color: yellow;
-                border-bottom: 1px solid green;
+                // border-bottom: 1px solid green;
                 .buy-name {
-                    width: 100px;
+                    // width: 100px;
                     display: inline-block;
-                    border: 2px solid red;
+                    // border: 2px solid red;
+                    letter-spacing:5px;
                     height: 30px;
-                    font-size: 16px;
+                    font-size: 15px;
+                    color:red;
+                    font-weight: 700;
                     text-align: center;
                     line-height: 30px;
                 }
                 .juti-address {
+                    font-size: 14px;
+                    color: #999;
                     margin-top: 5px;
                 }
             }
         }
         // 
         .purchase-payment {
+            background-color: #fff;
             padding-bottom: 20px;
-            border-bottom: 1px solid green;
+            padding-left: 15px;
+            margin-top: 15px;
+            // border-bottom: 1px solid green;
             // height: 200px;
+            .mode-pay {
+                padding-top: 10px;
+            }
         }
         .purchase-payment p {
             font-weight: 700;
+            margin-left: 10px;
             
         }
         .purchase-confirm_btn {
-            margin-top: 20px;
-            
+            width: 100%;
+            text-align: right;
+            margin-top: 10px;
+            .confirm_btn {
+                background-color: red;
+                color: #fff;
+                font-weight: 700;
+            }
         }
         .consignment-inventory {
-            border-bottom: 1px solid green;
+            // border-bottom: 1px solid green;
             .consignment-inventory_head {
                 display: flex;
+                background-color: #fff;
                 padding: 10px 0;
-                border-bottom: 1px solid #ccc;
+                margin-top: 20px;
+                padding-left: 15px;
+                padding-right: 15px;
+                // border-bottom: 1px solid #ccc;
                 justify-content: space-between;
             }
             .consignment-inventory_content {
+                background-color: #fff;
                 // background-color: pink;
+                padding-left: 15px;
+                padding-top: 15px;
                 .inventory_content {
                     height: 200px;
                     display: flex;

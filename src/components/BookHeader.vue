@@ -92,7 +92,6 @@ export default {
                     name:'login',   //跳转的路径
                 })
             }
-            
         },
         // 跳转到订单界面
         goToDing() {
@@ -130,6 +129,7 @@ export default {
         padding-top: 0;
         padding-bottom: 2px;
         box-sizing: border-box;
+        background-color: #fff;
         // border-bottom: 1px solid #ccc;
         box-shadow: 0px 5px 10px 0px #e5e7eb;
         // fafafa

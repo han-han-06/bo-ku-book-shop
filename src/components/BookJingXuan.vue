@@ -5,7 +5,7 @@
         <div class="lanmu-pic">
             
                 <div v-for='(item,index) in arrList' :key='index' class="pic-info">
-                    <div class="pic-aaa">
+                    <div class="pic-aaa" @click="goDetail">
                         <!-- 图片{{index}} -->
                         <span class="bok-pic">                               
                             <!-- 160*160 -->
@@ -15,6 +15,7 @@
                         <span class='price'>￥22.22</span>
                     </div>
                     <!--  -->
+                    
                 </div>
                 
         </div>
@@ -28,6 +29,7 @@ export default {
     props:{
         // 获取图书详情，应该有图片，价格，作者就不用了，
         // 有标题，其他都可以没有，但是不能没有价格
+    
         arrList:{
             typr:Array,
             default:function() {
@@ -36,7 +38,15 @@ export default {
         }
     },
     methods:{
-
+        goDetail() {
+            this.$store.state.bookId = 'b108'
+            // 跳转到详情
+            this.$router.push(
+                {
+                    name:'bookDetails'
+                }
+            )
+        }
     }
 }
 </script>
@@ -76,6 +86,9 @@ export default {
                 height:100%;
             }
         }
+    }
+    .pic-aaa:hover {
+        cursor: pointer;
     }
 }
 .pic-info {
