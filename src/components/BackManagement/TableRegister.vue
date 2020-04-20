@@ -1,6 +1,16 @@
 <template>
     <!-- 注册页面 -->
     <div class="registered">
+          <div class="registered-head">
+            <div class="registered-heade_content">
+                <div class="heade_content">
+                    <div class="boku-logo">
+                    <img class="boku-logo_img" src="../../assets/images/logo.jpg">
+                </div>
+                <div class="boku-zhuce">欢迎登录后台管理系统</div>
+                </div>
+            </div>
+        </div>
         <!-- 头部 放个注册的logo啥的-->
         <div class="registered-content">
             <div class="registered-content_form">
@@ -125,7 +135,6 @@ import request from '../../api/api'
                     )
                 })
             }).catch(err=>{
-                console.log('err校验没过',err)
             })
         },
         // 重置
@@ -166,6 +175,44 @@ import request from '../../api/api'
 </script>
 
 <style scoped lang='scss'>
+.registered-head {
+    height: 120px;
+    width: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: #fff;
+    box-shadow:0px 5px 10px 0px #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    .registered-heade_content {
+        
+        height: 100%;
+        width: 1200px;
+        display: flex;
+        margin: 0 auto;
+        justify-content: space-between;
+        .heade_content {
+            display: flex;
+            .boku-logo { 
+            margin-right: 20px;
+            height: 100%;
+            font: 20px Arial,Verdana;
+            color: #EB4C44;
+            line-height: 150px;
+            .boku-logo_img {
+                margin-top: 43px;
+            }
+        } 
+        .boku-zhuce {
+            font: 20px Arial,Verdana;
+            color: #666;
+            margin-top: 70px;
+        }
+        }
+        
+    }
+}
 .registered-head {
     height: 120px;
     width: 100%;
@@ -217,7 +264,7 @@ import request from '../../api/api'
 .registered-content {
     width: 1200px;
     margin: 0 auto;
-    // margin-top: 200px;
+    margin-top: 200px;
     // background-color: #cccccc;
     .registered-content_form {
         .zhuce-btn {

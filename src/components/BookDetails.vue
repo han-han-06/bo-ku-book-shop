@@ -21,7 +21,7 @@
             <div class="info—top_left">
                 <div class="big-img">
                     <!-- 应该给个宽和高，要不他动不了 -->
-                    <!-- <pic-zoom :url="bookInfo.bookPictures[0].pictureUrl" :scale="2"></pic-zoom> -->
+                    <pic-zoom :url="bookInfo.mainPic.pictureUrl" :scale="2"></pic-zoom>
                 </div>
             </div>
             <!-- 每本书的右边，分为三部分，简介，（价格，作者，），（加入购物车） -->
@@ -148,7 +148,8 @@ export default {
             colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
             // 图书id
             id:"",
-            // 
+            // 商品图片
+            // shopPic:[]
         }
     },
     watch:{
@@ -157,19 +158,16 @@ export default {
         }
     },
     created() {
-        console.log(33343)
         // 获取图书id
-        this.id = this.$store.state.bookId||'b108'
+        this.id = this.$store.state.bookId
         console.log('id',this.id)
         // 获取图书详情
-        this.getBook()
-        // 获取图书相关的评论
-        this.getComInfo()
+        this.getBook(this.id)
         // 根据id查询单条数据
-        this.commentsList.map(el =>{
-            // 
-            el.starLevel = 1
-        })
+        // this.commentsList.map(el =>{
+        //     // 
+        //     el.starLevel = 1
+        // })
         // 获取评论
         this.getComments()
     },
@@ -181,10 +179,13 @@ export default {
         // 获取评论
         getComments() {
             let bookId = this.id
+            let {page,size} = this.pageInfo
             // 获取图书评论
-            request.viewComments(bookId).then(res =>{
+            request.viewComments(page,size,bookId).then(res =>{
                 // 获取相应的评论，去掉那句话
-                this.commentsList = res
+                this.commentsList = res.commentVOS
+                this.totalComment = res.count
+                console.log('commentsList',this.commentsList)
             })  
             this.commentsList = [
                 {
@@ -200,13 +201,17 @@ export default {
         getBook() {
             request.getBookDetail(this.id).then(res =>{
                 console.log('res图书详情',res)
+                
+                let arr = []
+                res.bookPictures.some(el =>{
+                    if(el.mainPic) {
+                        arr =  el
+                    }
+                })
+                res.mainPic = arr
+                console.log('arr',arr)
                 this.bookInfo = res
-            })
-        },
-        // 获取这本书的评论
-        getComInfo() {
-            request.getBookCom(this.id).then(res =>{
-                console.log('图书评论',res)
+                console.log('bookInfo',this.bookInfo)
             })
         },
         // 加入购物车
@@ -221,7 +226,6 @@ export default {
             if(this.$store.state.userId) {
                 // 获取用户id
                 let customId = this.$store.state.userId
-                customId = "u106"
                 // 获取图书id
                 let bookId = this.id
                 let data = {bookCount,customId,bookId}

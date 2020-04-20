@@ -15,11 +15,12 @@
         <div class="address-content" v-if="!isAddress">
             <div v-for="(item,index) in addressList" :key="index" class="address">
                 <div class="address-user">
-                    <span>王涵</span>
-                    <span>15511351896</span>
+                    <span>{{item.receiver}}</span>
+                    <span>{{item.phone}}</span>
+                    <span class="del-btn" @click="delAddress(item)">删除</span>
                 </div >
                 <div class='address-ss'>
-                    这是他的地址，这是他的地址
+                    {{item.address}}
                 </div>
                 
             </div>
@@ -35,7 +36,7 @@ export default {
     data() {
         return {
             // 收获地址
-            addressList:[1,2,3],
+            addressList:[],
             // 收货地址是否显示
             isAddress:false,
         }
@@ -49,13 +50,12 @@ export default {
         getAddressInfo() {
             // 获取相应的用户id
             let userId = this.$store.state.userId
-            userId = 'u103'
             request.getAddressId(userId).then(res =>{
                 console.log('res',res)
+                this.addressList = res
             })
         },
         addAddress() {
-            console.log(2222)
             // 显示新增表单
             this.isAddress = true
             this.$router.push(
@@ -70,12 +70,22 @@ export default {
         sureAdd() {
             // 确定新增，确定的时候调取接口，然后刷新下面的数字
         },
+        // 返回结账
         backPurchase() {
-            // console.log(11111)
             this.$router.push(
                 {name:'purchaseInfo'}
             )
-        }
+        },
+        // 删除地址
+        delAddress(item) {
+            let {addressId} = item
+            request.delAddress(addressId).then(res =>{
+                console.log('res',res)
+                this.$commonUtils.setMessage('success','删除成功')
+                // 刷新列表
+                this.getAddressInfo()
+            })
+        } 
     }
 }
 </script>
@@ -121,6 +131,12 @@ export default {
         .back-Purchase {
             cursor: pointer;
             font-size: 14px;
+        }
+        .del-btn {
+            cursor: pointer;
+        }
+        .del-btn:hover {
+            color: red;
         }
 }
 </style>

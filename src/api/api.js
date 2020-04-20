@@ -56,7 +56,7 @@ export default {
     },
     // 获取图书详情
     getBookDetail(bookId) {
-        return axios.get(`bokustore/book/singleDataBook/${bookId}`)
+        return axios.get(`/bokustore/book/singleDataBook/${bookId}`)
     },
     // 获取图书评论
     getBookCom(bookId) {
@@ -76,7 +76,7 @@ export default {
     },
     // 根据顾客id和图书id集合查出已选中商品的信息，并显示在结账页
     getOrderInfo(data) {
-        return axios.get(`/bokustore/order/findBookToSettleAccountPage`,data)
+        return axios.post(`/bokustore/order/findBookToSettleAccountPage`,data)
     },
     // GET 根据订单号查询订单
     getOrder() {
@@ -92,18 +92,18 @@ export default {
     },
     // 添加评论
     addComments(data) {
-        return axios.post(` /bokustore/comment/addComments`,data)
+        return axios.post(`/bokustore/comment/addComments`,data)
     },
     // 根据bookId查询评论信息
-    viewComments(bookId) {
-        return axios.get(`/bokustore/comment/comments/${bookId}`)
+    viewComments(page,size,bookId) {
+        return axios.get(`/bokustore/comment/comments/${page}/${size}/${bookId}`)
     },
     // 删除购物车中的商品 
     deleteCarInfo(customId,bookId,data) {
         return axios.post(`/bokustore/cart/deleteCartBook/${customId}/${bookId}`,data)
     },
     // 修改购物车中的商品
-    modifyCarInfo() {
+    modifyCarInfo(data) {
         return axios.post(`/bokustore/cart/modifyCartBook`,data)
     },
     // 根据用户id查询收获地址
@@ -122,4 +122,8 @@ export default {
     addAddressHs(data) {
         return axios.post(`/bokustore/address/addAddress`,data)
     },
+    // 模糊搜索书名
+    searchBook(bookName) {
+        return axios.get(`/bokustore/book/findBookByName/${bookName}`)
+    }
 }

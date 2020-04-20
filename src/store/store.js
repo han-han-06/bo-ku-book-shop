@@ -7,10 +7,12 @@ let store = new vuex.Store({
         // 管理员id
         adminId:1,
         // 用户人员id
-        userId:1,
+        userId:'u106',
         userName:'',
-        adminName:"",
-        bookId:''
+        adminName:"a103",
+        bookId:'',
+        // 选中购物车要结算的参数
+        pramas:{}
     },
     actions:{
         // 用户注册
@@ -21,7 +23,7 @@ let store = new vuex.Store({
         // 登录
         logIn({commit},data) {
             axios.post('/loginRegist/user/login',data).then((res) =>{
-                console.log(33333)
+   
                 commit('getLogIn',res)
                 this.$commonUtils.setMessage('success','登录成功') 
                 this.$router.push({
@@ -29,9 +31,7 @@ let store = new vuex.Store({
                     })
                 return Promise.resolve(res)
             }).catch(err =>  {
-                console.log(22222)
-                console.log('登录错误err', err)
-                console.log(Vue)
+     
                 this.$router.push({
                     name:'bookStoreHome',   
                 })
@@ -41,11 +41,11 @@ let store = new vuex.Store({
         // 商家登录,
         adminLogin({commit},data) {
             axios.post('/loginRegist/admin/login',data).then(res =>{
-                console.log(res)
+              
                 commit('getAdminLogin',res)
                 return res
             }).catch(err =>{
-                console.log(err)
+             
                 return err
             })
         },
@@ -68,11 +68,9 @@ let store = new vuex.Store({
         getAdminLogin(state,data) {
             // 管理员id
             state.adminId = data.adminId
-            console.log('state.adminId',state.adminId)
         },
         // 管理員註冊，
         getAdminRegister(state,data) {
-            console.log('data',data)
         }
     }
 })

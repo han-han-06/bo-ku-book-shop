@@ -11,26 +11,29 @@
             <el-main>
                 <!-- 轮播 -->
                 <div class="lunbo">
-                    <!-- <BookLunBo>轮播</BookLunBo> -->
+                    <BookLunBo>轮播</BookLunBo>
                 </div>
                 <!-- 这个盒子是三个书的分类 -->
                 <div v-if="hiddenFenLei">
                     <!-- 精选图书 -->
                     <div class="jingxuan">
                         <BookJingXuan
-                        :arrList='arrList'
+                        :title="'精选图书'"
+                        :arrList='selectedBooks'
                         ></BookJingXuan>
                     </div>
                     <!-- 特价图书 -->
                     <div class="tejia">
-                        <!-- <BookJingXuan
-                        :arrList='arrList'
-                        ></BookJingXuan> -->
+                        <BookJingXuan
+                        :title="'热卖图书'"
+                        :arrList='hotsellBooks'
+                        ></BookJingXuan>
                     </div>
                     <div class="tejia">
-                        <!-- <BookJingXuan
-                        :arrList='arrList'
-                        ></BookJingXuan> -->
+                        <BookJingXuan
+                        :title="'推荐图书'"
+                        :arrList='recommendedBooks'
+                        ></BookJingXuan>
                     </div>
                 </div>
                 <!-- 选中某一个盒子的时候展示某一个分类 -->
@@ -60,13 +63,12 @@ export default {
     data () {
         return {
             // 轮播的图片
-            arrList:[
-                {title:1,id:1},
-                {title:1,id:1},
-                {title:1,id:1},
-                {title:1,id:1},
-                {title:1,id:1},
-            ],
+            // 精选
+            selectedBooks:[],
+            // 特价
+            hotsellBooks:[],
+            // 推荐
+            recommendedBooks :[],
             // 用户名
             userName:'',
             // 图书类别查询相应的图书
@@ -88,12 +90,24 @@ export default {
         this.userId = this.$store.dispatch.userId
         // 一开始初始化的时候我得获取到他们的分类
         this.hiddenFenLei = true
+        // 获取首页信息
+        this.getHome()
         // 我需要请求一下所有的数据么
         // 根据图书类别查询相应的图书
         this.getClassifyBooks()
         // 
     },
     methods:{
+        getHome() {
+
+            let {page,size} = this.pageInfo
+            request.getHomeInfo(page,size).then(res =>{
+                console.log('res',res)
+                this.selectedBooks  = res.selectedBooks.bookVOList
+                this.recommendedBooks  = res.recommendedBooks.bookVOList 
+                this.hotsellBooks  = res.hotsellBooks.bookVOList 
+            })
+        },
         getClassifyBooks() {
             // 图书类别
             // let category = 1

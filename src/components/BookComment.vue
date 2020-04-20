@@ -16,27 +16,7 @@
         <div class="book-comment">
             <!--分为头部和内容  -->
             <div class="comment">
-                <div class="comment-head">
-                    <!-- 头部-左边，图片 -->
-                    <div class="comment-head_he">
-                        <!-- 图片 -->
-                        <img src="../assets/images/book-detail.jpg">
-                    </div>
-                    <!-- 头部-右边-作者-价格-简介-书名 -->
-                    <div class="comment-head_bo">
-                        <div class="comment-head_name">计算机科学与技术</div>
-                        <div class="comment-head_auth">
-                            <span style="color:#005aa0">王涵</span> 
-                            <span style="color:#666">著</span>
-                        </div>
-                        <div class="comment-head_brief">简介简介简简介简介简介简介简介简介简介简介简介简介简介
-                            简介简介简介简介简介简介简介简介简介简介简介简介简简介简介简介简介简介简介简介简介简介
-                            简介简介简介简介简介简介简介简介简介简介简介简介简简介简介简简介简介简介简介简介简介简
-                            介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简
-                            介简介简介介简介简介简介</div>
-                        <div class="comment-head_price">￥ <span style="color:red">22.00</span></div>
-                    </div>
-                </div>
+                
                 <div class="comment-con">
                     <!-- 内容部分，有个头部，剩下就是个评论框了，然后下面有个评论按钮就好咧 -->
                     <div class="comment-con_fir">商品评论区</div>
@@ -44,7 +24,7 @@
                     <div class="block">
                         <span class="demonstration">请给人家打个分吧</span>
                         <el-rate
-                            v-model="value2"
+                            v-model="commentStar"
                             :colors="colors">
                         </el-rate>
                     </div>
@@ -54,11 +34,11 @@
                             type="textarea"
                             :rows="4"
                             placeholder="分享体验心得，给万千想买的人一个参考~"
-                            v-model="commentText">
+                            v-model="comment">
                         </el-input>
                     </div>
                     <div class="comment-con_third">
-                        <!-- 评论按钮 -->
+                        <div 评论按钮 -->
                         <div class="comment-con_btn">
                             <el-button type="text" @click="onComment" class="comment-btn">发表评论</el-button>
                         </div>
@@ -71,6 +51,7 @@
             <BookStoreFooter></BookStoreFooter>
         </div>
     </div>
+    </div>
 </template>
 <script>
 import request from '../api/api'
@@ -78,8 +59,8 @@ export default {
     data() {
         return {
             // 评论区
-            commentText:"",
-            value2:null,
+            comment:"",
+            commentStar:null,
             colors: ['#99A9BF', '#F7BA2A', '#FF9900'] 
         }
     },
@@ -87,7 +68,15 @@ export default {
         onComment() {
             // 获取到商品id，评论内容，
             // 调取接口
-            // request.
+            let bookId = item.bookId
+            let customId = this.$store.state.userId
+            let commentStar = this.commentStar
+            let comment = this.comment
+            let data = {bookId,customId,commentStar,comment}
+            request.addComments(data).then(res =>{
+                console.log('res',res)
+                this.$commonUtils.setMessage('success','评论成功')
+            })
         }
 
     }

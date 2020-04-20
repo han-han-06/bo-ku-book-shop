@@ -37,7 +37,7 @@
                     <!-- 书的图片和内容 -->
                     <div class="shu-cont">
                         <div class="shu-cont_img">
-                            <img src="../assets/images/order.jpg">
+                            <img :src="item.bookPicture">
                         </div>
                         <div class="shu-cont_info">
                             这个是书的内容,这个是书的内容呢
@@ -45,11 +45,11 @@
                     </div>
                     <!-- 图书数量 -->
                     <div style="margin-left:63px">
-                        <span>x2</span>
+                        <span>{{item.bookCount}}</span>
                     </div>
                     <!-- 图书价格 -->
                     <div style="margin-left:195px;color:red;flex-shink:0">
-                        <span>总额 ￥22.22</span>
+                        <span>总额 ￥{{item.orderTotalPrice}}</span>
                     </div>
                     <!-- 收货人 -->
                     <div style="margin-left:200px;flex-warp:nowarp">
@@ -83,6 +83,7 @@
     </div>
 </template>
 <script>
+import request from '../api/api'
 export default {
     data() {
         return {
@@ -94,10 +95,24 @@ export default {
             totalOrder:30
         }
     },
+    created() {
+        // 获取评论信息
+        this.getComm()
+    },
     // 
     methods:{
-        // 确认收货
+        getComm() {
+            let {page,size} = this.pageInfo
+            let userId = this.$store.state.userId
+            request.getOrderUser(page,size,userId).then(res =>{
+                console.log('res',res)
+                this.arr = res.orderVOList
+                this.totalOrderount = res.count
+            })
+        },
+        // 去评论
         confirmReceipt() {
+        
             // 确认收货后跳转到评论页面
             this.$router.push(
                 {name:'bookComment'}) 

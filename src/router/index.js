@@ -102,23 +102,23 @@ export default new Router({
       ]
     },
     // 下面是后台管理页面
+       // 后台登录
+      {
+        path:'/tableloginIn',
+        name:'tableloginIn',
+        component:tableloginIn
+      },
+      // 后台注册
+      {
+        path:'/tableRegister',
+        name:'tableRegister',
+        component:tableRegister
+      },
     {
       path:'/backStageFrame',
       name:'backStageFrame',
       component:backStageFrame,
       children:[
-        // 后台登录
-        {
-          path:'',
-          name:'tableloginIn',
-          component:tableloginIn
-        },
-        // 后台注册
-        {
-          path:'tableRegister',
-          name:'tableRegister',
-          component:tableRegister
-        },
         // 后台首页
         {
           path:'manageHome',

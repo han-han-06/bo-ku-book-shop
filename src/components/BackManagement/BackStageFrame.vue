@@ -1,11 +1,12 @@
 <template>
     <!-- 这是后台框 -->
     <div class="stage-frame">
-        <div class="stage-head">
+        <div class="aaa">
+            <div class="stage-head">
         <!-- 分为左右两个盒子。左边的放图片，右边的放个人登录信息， -->
             <div class="stage-head_info">
-                <!-- <img class="boku-logo_img" src="../../assets/images/logo.jpg"> -->
-                <!-- <span>后台管理</span> -->
+                <img class="boku-logo_img" src="../../assets/images/logo.jpg">
+                <span>后台管理</span>
             </div>
             <div class="stage-head_merchant">
                 <span>欢迎登录</span>
@@ -16,6 +17,7 @@
             </div>
             </div>
             
+        </div>
         </div>
         <div class="stage-content">
             <!-- 放表格 -->
@@ -28,8 +30,12 @@ export default {
     data() {
         return {
             // 商家用户名
-            adminName:'涵涵'
+            adminName:''
         }
+    },
+    created() {
+       
+        this.adminName = this.$store.state.adminName
     },
     methods:{
         // 退出，跳到登录页面
@@ -44,12 +50,17 @@ export default {
 <style lang="scss" scoped>
 .stage-frame {
     height: 100%;
+    .aaa {
+        width: 100%;
+        background-color: #fff;
+        box-shadow: 0px 2px 10px rgba(153, 153, 153, 0.349019607843137);
+    }
     .stage-head {
         height: 60px;
-        // width: 100%;
+        width: 1200px;
         background-color: #fff;
-        padding: 0 40px;
-        box-shadow: 0px 2px 10px rgba(153, 153, 153, 0.349019607843137);
+        // padding: 0 350px;
+        
         box-sizing: border-box;
         display: flex;
         margin: auto;

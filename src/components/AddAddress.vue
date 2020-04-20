@@ -8,28 +8,29 @@
                 <!-- 一个选择省区的。一个详细地址~~ -->
                 <el-form :model="addressFrom" :rules="rules" ref="addressFrom" label-width="120px" class="demo-ruleForm" label-position="left">
                     <div class='aaa'>
-                        <el-form-item label="手机号码" prop="phoneNum" >
-                            <el-input v-model="addressFrom.phoneNum" class="phone-inp" ></el-input>
+                        <el-form-item label="手机号码" prop="customPhone" >
+                            <el-input v-model="addressFrom.customPhone" class="phone-inp" ></el-input>
                         </el-form-item>
                     </div>
-                    <div class='aaa'>
-                        <el-form-item label="地址信息" prop="area">
+                    <!-- <div class='aaa'> -->
+                        <!-- <el-form-item label="地址信息" prop="area">
                         <el-cascader
                             size="large"
                             :options="options"
                             v-model="selectedOptions"
                             @change="handleChange">
                         </el-cascader>
+                    </el-form-item> -->
+                    <!-- </div> -->
+                    <div class='aaa'>
+                        <el-form-item label="详细地址" prop="address">
+                        <el-input v-model="addressFrom.address" placeholder="请输入地址" class="address-inp"></el-input>
+                        <el-checkbox v-model="addressFrom.isdefault">是否为默认地址</el-checkbox>
                     </el-form-item>
                     </div>
                     <div class='aaa'>
-                        <el-form-item label="详细地址" prop="detailAddress">
-                        <el-input v-model="addressFrom.detailAddress" placeholder="请输入详细地址" class="address-inp"></el-input>
-                    </el-form-item>
-                    </div>
-                    <div class='aaa'>
-                        <el-form-item label="收货人姓名" prop="consigneeName">
-                        <el-input v-model="addressFrom.consigneeName" placeholder="请输入收货人姓名" class="address-inp"></el-input>
+                        <el-form-item label="收货人姓名" prop="receiver">
+                        <el-input v-model="addressFrom.receiver" placeholder="请输入收货人姓名" class="address-inp"></el-input>
                     </el-form-item>
                     </div>
                     </el-form>
@@ -40,7 +41,9 @@
             </div>
     </div>
 </template>
+
 <script>
+import request from '../api/api'
 import { provinceAndCityData, regionData, provinceAndCityDataPlus, regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data'
 export default {
     data() {
@@ -71,16 +74,26 @@ export default {
         },
         // 添加的保存
         submitForm(formName) {
-            this.$refs[formName].validate((valid) => {
-                if (valid) {
-                    //跳转到地址预览页面
-                    this.$router.push({
-                        name:'userAddress'
+            let customId = this.$store.state.userId
+                    let data = {...this.addressFrom,customId}
+                    // 请求接口
+                    request.addAddressHs(data).then(res =>{
+                        console.log('res',res)
+                        this.$commonUtils.setMessage('success','添加成功')
+                        //跳转到地址预览页面
+                        this.$router.push({
+                            name:'userAddress'
+                        })
+                        
                     })
-                } else {
-                    return false;
-                }
-            });
+            // this.$refs[formName].validate((valid) => {
+            //     if (valid) {
+                
+                    
+            //     } else {
+            //         return false;
+            //     }
+            // });
         },
         // 取消，跳转到收货地址列表那块
         resetForm() {

@@ -179,7 +179,7 @@ export default {
                 // return 一个空数组
                 return {name:'',url:""}
                 // return {}
-                // console.log('picArr',this.picArr)
+              
             }else if(el.mainPic===false){
                 // 存在
                 let obj  = {}

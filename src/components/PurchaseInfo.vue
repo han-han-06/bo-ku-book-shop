@@ -8,7 +8,7 @@
                 <div class="purchase-consignee">
                     <div class="consignee-per">
                         <span style="font-weight:700">收货人信息</span>
-                        <span @click="addAddress" class="xinzeng-address">新增收获地址</span>
+                        <span @click="addAddress" class="xinzeng-address">修改收货地址</span>
                     </div>
                     <div class="consignee-content">
                         <div>
@@ -50,7 +50,7 @@
                                 <div class="inventory">
                                     <!-- 这个左边房图片 -->
                                     <div class="inventory-img">
-                                        <!-- <img src="../assets/images/book1.png"> -->
+                                        <img :src="item.mainBookPicture">
                                     </div>
                                     <!-- 这个右边放这个书的名称和作者 -->
                                     <div class="inventory-book">
@@ -93,40 +93,54 @@ export default {
         }
     },
     created() {
-        let pramas  = this.$route.params
-        console.log('pramas',pramas)
-        pramas = {
-            bookIds:['b108'],
-            userId:'u103'
-        }
+        let pramas  = this.$store.state.pramas
         this.getInfoList(pramas)
     },
     methods:{
+        // 获取结账信息
         getInfoList(pramas) {
             request.getOrderInfo(pramas).then(res =>{
-                // console.log('res',res)
+                console.log('res',res)
                 this.billingInfo = res
             })
             // 图书详情信息
-            this.billingInfo = [
-                {
-                    bookCount:5,
-                    bookDetail:'恋爱这一个字，对屠格涅夫来说，或许是伤痛的字之一吧。梦想与现实之间的矛盾，性格与境遇之间的关系，所有存在的不如意与绝望，人生所有的不凑巧等，没有人比屠格涅夫更能将其描绘得那么好。',
-                    bookName:'所爱隔山海',
-                    bookNewPrice:58,
-                    mainBookPicture:'http://120.26.175.109:8080/pictures/4aed9a2a-9e9b-45e1-b202-1592c4621ec61587024284750.jpg',
-                    bookAuthor:'王涵'
-                }
-            ]
+            // this.billingInfo = [
+            //     {
+            //         bookCount:5,
+            //         bookDetail:'恋爱这一个字，对屠格涅夫来说，或许是伤痛的字之一吧。梦想与现实之间的矛盾，性格与境遇之间的关系，所有存在的不如意与绝望，人生所有的不凑巧等，没有人比屠格涅夫更能将其描绘得那么好。',
+            //         bookName:'所爱隔山海',
+            //         bookNewPrice:58,
+            //         mainBookPicture:'http://120.26.175.109:8080/pictures/4aed9a2a-9e9b-45e1-b202-1592c4621ec61587024284750.jpg',
+            //         bookAuthor:'王涵'
+            //     }
+            // ]
         },
         // 立即结算，跳转到我的订单页面
         onPurchaseConfirm() {
             // console.log(222)
             // 结算成功，跳转到订单页面
-            this.$commonUtils.setMessage('success','结算成功')
-            this.$router.push({
-                name:'individualOrders'
+//             {
+//   "addressId": "string",
+//   "settleAccountDTOS": [
+//     {
+//       "address": "string",
+//       "bookCount": 0,
+//       "bookId": "string",
+//       "orderPrice": "string",
+//       "phone": "string",
+//       "receiver": "string"
+//     }
+//   ],
+//   "userId": "string"
+// }re
+            request.savaOrder(data).then(res =>{
+                console.log('res',res)
+                this.$commonUtils.setMessage('success','结算成功')
+                this.$router.push({
+                    name:'individualOrders'
+                })
             })
+            
         },
         // 新增收获地址。跳转到收获地址页面
         addAddress() {

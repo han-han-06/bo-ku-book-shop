@@ -2,16 +2,16 @@
 <!-- 登录页面 -->
     <div class="registered">
         <!-- 头部 放个注册的logo啥的-->
-        <!-- <div class="registered-head">
+        <div class="registered-head">
             <div class="registered-heade_content">
                 <div class="heade_content">
-                    <div class="boku-logo"> -->
-                    <!-- <img class="boku-logo_img" src="../../assets/images/logo.jpg"> -->
-                <!-- </div>
+                    <div class="boku-logo">
+                    <img class="boku-logo_img" src="../../assets/images/logo.jpg">
+                </div>
                 <div class="boku-zhuce">欢迎登录后台管理系统</div>
                 </div>
             </div>
-        </div> -->
+        </div>
         <div class="registered-content">
             <div class="registered-content_form">
                 <el-form :model="ruleForm" status-icon 
@@ -78,7 +78,6 @@ import request from '../../api/api'
         },
         methods: {
         submitForm(formName) {
-            // console.log(22222)
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     // 带着用户名跳转到商家页面，用于管理么
@@ -88,10 +87,12 @@ import request from '../../api/api'
                         this.$store.state.adminId = res.adminId
                         // 获取登录名
                         this.$store.state.adminName = res.adminName
-                        // 跳转到登录页面
+                        // setTimeout(() =>{
+                            // 跳转到登录页面
                         this.$router.push({
                             name:'manageHome'
                         })
+                        // },300)
                     })
                     
                 }
@@ -125,7 +126,6 @@ import request from '../../api/api'
         },
         // 生成随机验证码
         getCode() {
-            // console.log(5555)
             let codeStr = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             let str = '';
             // 验证码有几位就循环几次
@@ -144,6 +144,7 @@ import request from '../../api/api'
     position: fixed;
     left: 0;
     top: 0;
+    background-color: #fff;
     box-shadow:0px 5px 10px 0px #e5e7eb;
     display: flex;
     justify-content: space-between;
@@ -178,7 +179,7 @@ import request from '../../api/api'
 .registered-content {
     width: 100%;
     margin: 0 auto;
-    padding-top: 100px;
+    padding-top: 150px;
     // margin-top: 150px;
     // background-color: #cccccc;
     .registered-content_form {

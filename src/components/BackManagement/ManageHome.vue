@@ -121,9 +121,6 @@ export default {
     },
     created() {
         this.adminId = this.$store.state.adminId
-        this.adminId = 'a103'
-        // console.log('id',this.adminId)
-        // this.adminId = 'a103'
         // 获取到当前列表
         this.getList()
     },
@@ -228,6 +225,20 @@ export default {
             // 刷新列表
             this.getList()
         },
+        // 模糊搜索书名
+        onSearch() {
+            let {bookName} = this.formInline
+            if(bookName) {
+                request.searchBook(bookName).then(res =>{
+                // console.log(res)
+                this.tableData = res
+                this.total = res.length
+            })
+            }else {
+                this.pageInfo.page = 1
+                this.getList()
+            }
+        }
         // 
     }
 }

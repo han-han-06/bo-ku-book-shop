@@ -163,7 +163,7 @@ export default {
         onSave(formName){
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    let adminId = this.$store.state.adminId || 'a103'
+                    let adminId = this.$store.state.adminId
                     let {ruleForm,bookPictures,picArr} = this
                     // 把封面和其他详情图片都盒到一块
                     bookPictures.push(...picArr)
@@ -247,5 +247,9 @@ export default {
     overflow-y: auto;
     padding: 40px;
     box-sizing: border-box;
+    .demo-ruleForm {
+        width: 100%;
+        height: 100%;
+    }
 }
 </style>

@@ -8,7 +8,7 @@
                 <div class="registered-heade_content">
                     <div class="heade_content">
                         <div class="boku-logo">
-                        <!-- <img class="boku-logo_img" src="../assets/images/logo.jpg"> -->
+                        <img class="boku-logo_img" src="../assets/images/logo.jpg">
                     </div>
                     <div class="boku-zhuce">欢迎登录</div>
                     </div>
@@ -158,7 +158,6 @@ export default {
     methods:{
         getCarInfo() {
             let customId = this.$store.state.userId
-            customId = 'u106'
             request.getCarMess(customId).then(res =>{
                 // console.log('购物车内容',res)
                 this.carInfo = res
@@ -187,6 +186,12 @@ export default {
                 con.bookCount = con.bookCount-1
                 this.$set(this.carInfo,index,con)
                 this.getTotalPrice(index)
+                let bookCount = con.bookCount
+                let bookId = con.bookId
+                let customId = this.$store.state.userId
+                request.modifyCarInfo({bookCount,bookId,customId}).then(res =>{
+                    console.log(222,res)
+                })
             }
         },
         // 结算按钮
@@ -209,6 +214,10 @@ export default {
                 // 用户id
                 let userId  = this.$store.state.userId
                 // let data = {bookIds,userId}
+                this.$store.state.pramas = {
+                        bookIds,
+                        userId
+                    }
                 this.$router.push(
                     {name:'purchaseInfo',
                     params:{
@@ -233,6 +242,13 @@ export default {
             con.bookCount = con.bookCount+1
             this.$set(this.carInfo,index,con)
             this.getTotalPrice(index)
+            // 调取接口，更新后台图书信息
+            let bookCount = con.bookCount
+            let bookId = con.bookId
+            let customId = this.$store.state.userId
+            request.modifyCarInfo({bookCount,bookId,customId}).then(res =>{
+                console.log(222,res)
+            })
         },
         // 全选
         onCheckAll(val) {
@@ -256,7 +272,7 @@ export default {
             let bookId = item.bookId
             // 获取顾客id
             let customId = this.$store.state.userId
-            customId = 'u103'
+
             // let data = {}
             // 删除事件
             request.deleteCarInfo(customId,bookId).then(res =>{

@@ -1,15 +1,15 @@
 <template>
 <!-- 每一栏图书，精选图书，特价图书 -->
     <div class="lanmu">
-        <p class="jingxuan">精选图书</p>
+        <p class="jingxuan">{{title}}</p>
         <div class="lanmu-pic">
             
                 <div v-for='(item,index) in arrList' :key='index' class="pic-info">
-                    <div class="pic-aaa" @click="goDetail">
+                    <div class="pic-aaa" @click="goDetail(item)">
                         <!-- 图片{{index}} -->
                         <span class="bok-pic">                               
                             <!-- 160*160 -->
-                            <img src="../assets/images/book.png">
+                            <img :src="item.bookPicture">
                         </span>
                         <div class='price' style="font-size:14px;color:#6f6f6f">计算机科学与技术</div>
                         <span class='price'>￥22.22</span>
@@ -31,15 +31,21 @@ export default {
         // 有标题，其他都可以没有，但是不能没有价格
     
         arrList:{
-            typr:Array,
+            type:Array,
             default:function() {
                 return []
             }
+        },
+        title:{
+            type:String,
+            default:''
         }
     },
     methods:{
-        goDetail() {
-            this.$store.state.bookId = 'b108'
+        goDetail(item) {
+            let {bookId} = item
+            this.$store.state.bookId = bookId
+            
             // 跳转到详情
             this.$router.push(
                 {
