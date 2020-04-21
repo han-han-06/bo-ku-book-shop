@@ -1,5 +1,5 @@
 <template>
-    <div class="modify-drawer">
+    <div class="add-drawer">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
         label-width="150px" class="demo-ruleForm" label-position='left'>
             <el-form-item label="书名" prop="bookName">
@@ -171,12 +171,9 @@ export default {
                     let data = {...ruleForm,adminId,bookPictures}
                     // 新增成功，关闭侧滑
                     request.addBook(data).then(res =>{
-                        console.log('res',res)
                         this.$commonUtils.setMessage('success','添加成功')
                         this.$emit('close-drawer')
                     })
-                    // 调取jiekou
-                    console.log(this.ruleForm)
                 } 
                 // 
             });
@@ -241,15 +238,22 @@ export default {
 }
 }
 </script>
-<style lang="scss" scoped>
-.modify-drawer {
+<style lang="scss">
+.el-drawer__body {
     max-height: calc(100% - 73px);
     overflow-y: auto;
     padding: 40px;
+    padding-top: 20px;
+}
+.add-drawer {
+    // max-height: calc(100% - 73px);
+    // overflow-y: auto;
+    padding: 40px;
+    height: 100%;
     box-sizing: border-box;
-    .demo-ruleForm {
-        width: 100%;
-        height: 100%;
-    }
+    // .demo-ruleForm {
+    //     width: 100%;
+    //     height: 100%;
+    // }
 }
 </style>

@@ -6,10 +6,11 @@
                 <div class="registered-heade_content">
                     <div class="heade_content">
                         <div class="boku-logo">
-                        <!-- <img class="boku-logo_img" src="../assets/images/logo.jpg"> -->
+                        <img class="boku-logo_img" src="../assets/images/logo.jpg">
                     </div>
-                    <div class="boku-zhuce">欢迎登录</div>
+                    <div class="boku-zhuce">欢迎光临</div>
                     </div>
+                    <div @click="backHome" class="back-top">返回首页</div>
                 </div>
             </div>
         </div>
@@ -19,7 +20,7 @@
         <div class="book-info—top">
             <!-- 每本书的图片左边 -->
             <div class="info—top_left">
-                <div class="big-img">
+                <div class="big-img" v-if="flag">
                     <!-- 应该给个宽和高，要不他动不了 -->
                     <pic-zoom :url="bookInfo.mainPic.pictureUrl" :scale="2"></pic-zoom>
                 </div>
@@ -148,6 +149,8 @@ export default {
             colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
             // 图书id
             id:"",
+            // 避免一开始获取的时候渲染不到
+            flag:false
             // 商品图片
             // shopPic:[]
         }
@@ -201,7 +204,6 @@ export default {
         getBook() {
             request.getBookDetail(this.id).then(res =>{
                 console.log('res图书详情',res)
-                
                 let arr = []
                 res.bookPictures.some(el =>{
                     if(el.mainPic) {
@@ -210,6 +212,7 @@ export default {
                 })
                 res.mainPic = arr
                 console.log('arr',arr)
+                this.flag = true
                 this.bookInfo = res
                 console.log('bookInfo',this.bookInfo)
             })
@@ -239,10 +242,24 @@ export default {
         },
         // 立即购买
         immediateBuy() {
-            // 先校验。没问题这里需要跳转到订单那里么
-            this.$router.push(
-                {name:'purchaseInfo'}
-            )
+            console.log('bookInfo',this.bookInfo)
+            let bookId = this.bookInfo.bookId
+            let count = this.purchaseQuantity
+            let userId = this.$store.state.userId
+            let data = {bookId,count,userId}
+            console.log('data',data)
+            if(!userId) {
+                this.$commonUtils.setMessage('warning','请先登录')
+            }else {
+                request.outrightPurchase(data).then(res =>{
+                // 先校验。没问题这里需要跳转到订单那里么
+                this.$router.push(
+                    {name:'purchaseInfo'}
+                )
+            })
+            }
+            
+            
         },
         // 减数量
         subNum() {
@@ -258,7 +275,13 @@ export default {
             console.log('当前页',val)
             this.pageInfo.page = val
         },
-        // 
+        backHome () {
+            this.$router.push(
+                {
+                    name:"bookStoreHome"
+                }
+            )
+        } 
     }
 }
 </script>
@@ -305,6 +328,13 @@ export default {
         }
         }
     }
+}
+.back-top {
+    line-height: 180px;
+}
+.back-top:hover {
+    cursor: pointer;
+    color: red;
 }
 .book-info {
     width: 1200px;

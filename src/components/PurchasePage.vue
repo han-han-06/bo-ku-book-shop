@@ -6,10 +6,11 @@
             <div class="registered-heade_content">
                 <div class="heade_content">
                     <div class="boku-logo">
-                    <!-- <img class="boku-logo_img" src="../assets/images/logo.jpg"> -->
+                    <img class="boku-logo_img" src="../assets/images/logo.jpg">
                 </div>
-                <!-- <div class="boku-zhuce">欢迎登录</div> -->
+                <div class="boku-zhuce">欢迎登录</div>
                 </div>
+                <div @click="backHome" class="back-top">返回首页</div>
             </div>
         </div>
             <router-view class="purchase"></router-view>
@@ -34,7 +35,14 @@ export default {
             this.$router.push({
                 name:"userAddress",
             })
-        }
+        },
+        backHome () {
+            this.$router.push(
+                {
+                    name:"bookStoreHome"
+                }
+            )
+        } 
     }
     
 }
@@ -81,6 +89,13 @@ export default {
 .purchase {
     margin-top: 150px;
 
+}
+.back-top {
+    line-height: 180px;
+}
+.back-top:hover {
+    cursor: pointer;
+    color: red;
 }
 .purchase-page {
     width: 100%;

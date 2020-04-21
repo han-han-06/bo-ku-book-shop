@@ -131,10 +131,9 @@ import request from '../api/api'
         submitForm(formName) {
             this.$refs[formName].validate().then(() =>{
                 request.onRegister(this.ruleForm).then(res=>{
-                    // console.log('res',res)
                     // 消息提示
                     this.$commonUtils.setMessage('success','注册成功')
-                    // 跳转到登录页面
+                    // // 跳转到登录页面
                     this.$router.push({
                         path:'login',   
                     })
@@ -142,7 +141,6 @@ import request from '../api/api'
                     // console.log('err',err)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
                 })
             }).catch(err=>{
-                console.log('err校验没过',err)
                 // 我知道这样不应该，只是不想再让自己对你太
             })
         },

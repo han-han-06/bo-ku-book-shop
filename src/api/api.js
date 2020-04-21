@@ -35,15 +35,15 @@ export default {
         return axios.get(`/bokustore/book/singleDataBook/${bookId}`)
     },
     // 根据图书类别查询相应图书
-    getDiffBook(category) {
-        return axios.get(`bokustore/book/books/${category}`)
+    getDiffBook(page,size,category) {
+        return axios.get(`/bokustore/book/books/${page}/${size}/${category}`)
     },
     // 商家登录
     adminLogin(data) {
         return axios.post('/loginRegist/admin/login',data)
     },
     // 商家注册
-    adminRegister({commit},data) {  
+    adminRegister(data) {  
         return axios.post('/loginRegist/admin/regist',data)
     },
     // 修改的保存
@@ -63,8 +63,8 @@ export default {
         return axios.get(`bokustore/comment/comments/${bookId}`)
     },
     // 获取购物车信息
-    getCarMess(customId) {
-        return axios.get(`/bokustore/cart/allCart/${customId}`)
+    getCarMess(page,size,customId) {
+        return axios.get(`/bokustore/cart/allCart/${page}/${size}/${customId}`)
     },
     // 获取首页信息
     getHomeInfo(page,size) {
@@ -125,5 +125,9 @@ export default {
     // 模糊搜索书名
     searchBook(bookName) {
         return axios.get(`/bokustore/book/findBookByName/${bookName}`)
+    },
+    // 商品详情页面直接购买
+    outrightPurchase(data) {
+        return axios.post(`/bokustore/book/directBuyBook`,data)
     }
 }

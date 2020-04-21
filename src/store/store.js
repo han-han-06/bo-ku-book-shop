@@ -5,11 +5,11 @@ import axios from '../api/js/request'
 let store = new vuex.Store({
     state:{
         // 管理员id
-        adminId:1,
+        adminId:"",
         // 用户人员id
-        userId:'u106',
+        userId:'',
         userName:'',
-        adminName:"a103",
+        adminName:"",
         bookId:'',
         // 选中购物车要结算的参数
         pramas:{}
@@ -23,7 +23,6 @@ let store = new vuex.Store({
         // 登录
         logIn({commit},data) {
             axios.post('/loginRegist/user/login',data).then((res) =>{
-   
                 commit('getLogIn',res)
                 this.$commonUtils.setMessage('success','登录成功') 
                 this.$router.push({

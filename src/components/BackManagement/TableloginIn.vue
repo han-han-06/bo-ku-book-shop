@@ -40,7 +40,8 @@
                         <!-- 登录 -->
                         <el-button type="primary" @click="submitForm('ruleForm')" class="deng-btn">登录</el-button>
                         <!--  -->
-                        还没有账号？<span type="primary" @click="cancle()" style="color:red;cursor: pointer;">去注册</span>
+                        <span>还没有账号？</span>
+                        <span type="primary" @click="cancle()" style="color:red;cursor: pointer;">去注册</span>
                     </el-form-item>
                 </el-form>
             </div>
@@ -85,6 +86,9 @@ import request from '../../api/api'
                         this.$commonUtils.setMessage('success','登录成功')
                         // id
                         this.$store.state.adminId = res.adminId
+                         // 将用户信息存储到本地
+                        sessionStorage.setItem("adminId", res.adminId);
+                        sessionStorage.setItem("adminName", res.adminName);
                         // 获取登录名
                         this.$store.state.adminName = res.adminName
                         // setTimeout(() =>{

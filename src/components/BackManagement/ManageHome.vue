@@ -120,7 +120,11 @@ export default {
         }
     },
     created() {
-        this.adminId = this.$store.state.adminId
+        // this.adminId = this.$store.state.adminId
+        this.adminId = sessionStorage.getItem("adminId");
+        if(this.$store.state.adminId) {
+            this.$store.state.adminId = sessionStorage.getItem("adminId");
+        }
         // 获取到当前列表
         this.getList()
     },

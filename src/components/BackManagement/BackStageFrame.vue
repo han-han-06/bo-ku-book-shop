@@ -34,8 +34,7 @@ export default {
         }
     },
     created() {
-       
-        this.adminName = this.$store.state.adminName
+        this.adminName = sessionStorage.getItem("adminName");
     },
     methods:{
         // 退出，跳到登录页面

@@ -15,6 +15,7 @@
         <div class="address-content" v-if="!isAddress">
             <div v-for="(item,index) in addressList" :key="index" class="address">
                 <div class="address-user">
+                    <el-checkbox v-model="addressList[index].isCheck">备选项</el-checkbox>
                     <span>{{item.receiver}}</span>
                     <span>{{item.phone}}</span>
                     <span class="del-btn" @click="delAddress(item)">删除</span>
@@ -26,7 +27,7 @@
             </div>
         </div>
         <div class="back-Purchase" style="text-align:right;margin-right:20px;color:red" @click="backPurchase">
-            <span>返回结算</span>
+            <span>确认修改</span>
         </div>
     </div>
 </template>
@@ -51,8 +52,11 @@ export default {
             // 获取相应的用户id
             let userId = this.$store.state.userId
             request.getAddressId(userId).then(res =>{
-                console.log('res',res)
                 this.addressList = res
+                this.addressList.map(el =>{
+                    // 手动添加选中状态
+                    el.isCheck = false
+                })
             })
         },
         addAddress() {
@@ -72,15 +76,24 @@ export default {
         },
         // 返回结账
         backPurchase() {
+            let addressInfo 
+            this.addressList.map(el =>{
+                if(el.isCheck) {
+                    addressInfo = el
+                }
+            })
+            // let addressInfo = 
             this.$router.push(
-                {name:'purchaseInfo'}
+                {name:'purchaseInfo',
+                params:{
+                    addressInfo
+                }}
             )
         },
         // 删除地址
         delAddress(item) {
             let {addressId} = item
             request.delAddress(addressId).then(res =>{
-                console.log('res',res)
                 this.$commonUtils.setMessage('success','删除成功')
                 // 刷新列表
                 this.getAddressInfo()

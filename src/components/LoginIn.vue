@@ -73,12 +73,13 @@ import request from '../api/api'
             // console.log(22222)
             this.$refs[formName].validate().then(res =>{
                 request.logIn(this.ruleForm).then((res) =>{
-                    console.log('res',res)
+                    // 将用户信息存储到本地
+                    sessionStorage.setItem("uesrId", res.userId);
+                    sessionStorage.setItem("userName", res.userName);
                     this.$store.state.userId = res.userId
                     this.$commonUtils.setMessage('success','登录成功')
                     // 跳转到首页
                     this.$router.push({
-                        // console.log("this.$store.state.userId",this.$store.state.userId)
                         name:'bookStoreHome',   
                     })
                 })
@@ -117,7 +118,8 @@ import request from '../api/api'
             this.$router.push({
                 name:'registered'
             })
-        }
+        },
+        // 
         }
     }
 </script>

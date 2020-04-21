@@ -12,16 +12,6 @@
                             <el-input v-model="addressFrom.customPhone" class="phone-inp" ></el-input>
                         </el-form-item>
                     </div>
-                    <!-- <div class='aaa'> -->
-                        <!-- <el-form-item label="地址信息" prop="area">
-                        <el-cascader
-                            size="large"
-                            :options="options"
-                            v-model="selectedOptions"
-                            @change="handleChange">
-                        </el-cascader>
-                    </el-form-item> -->
-                    <!-- </div> -->
                     <div class='aaa'>
                         <el-form-item label="详细地址" prop="address">
                         <el-input v-model="addressFrom.address" placeholder="请输入地址" class="address-inp"></el-input>

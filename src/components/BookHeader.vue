@@ -6,10 +6,14 @@
             <div class="head-top_t">
                 <div class="logo">
                     <img src="../assets/images/logo.jpg">
-                    <span class="shop-mall">美妆商城</span>
+                    <span class="shop-mall">图书商城</span>
                 </div>
-                <div>
-                    <span>欢迎光临，<i class="please-log" @click="onLogin" >请登录</i></span>
+                <div >
+                    <span>欢迎光临，
+                        <!-- 如果用户名存在的话显示当前用户名，不存在的话显示请登录，跳转到登录页面 -->
+                        <i class="please-log" @click="onLogin" v-if="!customerName" >请登录</i>
+                        <i v-else>{{customerName}}</i>
+                    </span>
                 </div>
             </div>
         </div>
@@ -32,7 +36,7 @@
                         <span class="el-icon-shopping-cart-2"></span>
                         <span>购物车</span>
                         <!-- 加购数量 -->
-                        <span>{{purchaseQuantity}}</span>
+                        <!-- <span>{{purchaseQuantity}}</span> -->
                     </div>
                     <div class="dingdang" @click="goToDing">
                         <span>我的订单</span>
@@ -53,6 +57,19 @@ export default {
             purchaseQuantity:0,
             // 当前选中的value
             selectValue:''
+        }
+    },
+    props:{
+        // 顾客姓名
+        customerName:{
+            type:String,
+            default:''
+        }
+    },
+    // 应该可以不用 
+    watch:{
+        customerName:function(val) {
+            console.log('val',val)
         }
     },
     mounted() {

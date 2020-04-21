@@ -11,8 +11,8 @@
                             <!-- 160*160 -->
                             <img :src="item.bookPicture">
                         </span>
-                        <div class='price' style="font-size:14px;color:#6f6f6f">计算机科学与技术</div>
-                        <span class='price'>￥22.22</span>
+                        <div class='price' style="font-size:14px;color:#6f6f6f">{{item.bookName}}</div>
+                        <span class='price'>￥{{item.bookNewPrice}}</span>
                     </div>
                     <!--  -->
                     

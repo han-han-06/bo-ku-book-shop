@@ -12,6 +12,7 @@
                     </div>
                     <div class="boku-zhuce">欢迎登录</div>
                     </div>
+                     <div @click="backHome" class="back-top">返回首页</div>
                 </div>
             </div>
         </div>
@@ -31,7 +32,7 @@
             </div>
             <!-- 内容 -->
             <div class="cart-content_center">
-                <div class="cart-all_list">
+                <div class="cart-all_list" v-if="carInfo.length">
                     <div v-for="(item,index) in carInfo" :key="index" class="cart_list">
                     <!-- 选中 -->
                     <div class="car-check">
@@ -70,6 +71,9 @@
                         <el-button class="shanchu-btn" type="primary" icon="el-icon-delete" @click="deleteCarInfo(item,index)"></el-button>
                     </div>
                 </div>
+                </div>
+                <div v-else class="empty-car">
+                    您的购物车是空的哦
                 </div>
                 <!-- 这是分页 -->
                 <div class="cart-foot">
@@ -113,7 +117,7 @@ export default {
             total:200,
             // 是否全选
             checkAll:false,
-            carInfo:[{'name':1},{'name':2},{'name':3},{'name':4},{'name':5},{'name':5},{'name':5},{'name':5}],
+            carInfo:[],
             // 选中某一个
             checkOne:false,
             // 购物车数量
@@ -158,9 +162,11 @@ export default {
     methods:{
         getCarInfo() {
             let customId = this.$store.state.userId
-            request.getCarMess(customId).then(res =>{
+            let {page,size} = this.pageInfo
+            request.getCarMess(page,size,customId).then(res =>{
                 // console.log('购物车内容',res)
-                this.carInfo = res
+                this.carInfo = res.cartVOS
+                this.total = res.count
                 this.carInfo.map(el =>{
                     // 是否选中
                     el.isCheck = false
@@ -279,6 +285,13 @@ export default {
                 this.$commonUtils.setMessage('success','删除成功')
             })
         },
+        backHome() {
+            this.$router.push(
+                {
+                    name:"bookStoreHome",
+                }
+            )
+        }
     }
 }
 </script>
@@ -324,6 +337,13 @@ export default {
         }
         }
     }
+}
+.back-top {
+    line-height: 180px;
+}
+.back-top:hover {
+    cursor: pointer;
+    color: red;
 }
 .shopping-cart {
     margin: 0 auto;
@@ -453,6 +473,10 @@ export default {
     }
     .jiesuan-btn:hover {
         cursor: pointer;
+    }
+    .empty-car {
+        padding: 20px 0;
+        text-align: center;
     }
 }
 

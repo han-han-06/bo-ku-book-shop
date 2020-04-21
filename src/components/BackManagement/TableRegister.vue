@@ -1,13 +1,17 @@
 <template>
     <!-- 注册页面 -->
     <div class="registered">
-          <div class="registered-head">
+        <div class="registered-head">
             <div class="registered-heade_content">
                 <div class="heade_content">
                     <div class="boku-logo">
                     <img class="boku-logo_img" src="../../assets/images/logo.jpg">
+                    </div>
+                    <div class="boku-zhuce">后台管理系统</div>
                 </div>
-                <div class="boku-zhuce">欢迎登录后台管理系统</div>
+                <div class="heade_denglu">
+                    <span>已有帐号？</span>
+                    <span style="color:red;cusor:pointer" @click="onGoLogin">去登陆</span>
                 </div>
             </div>
         </div>
@@ -128,7 +132,8 @@ import request from '../../api/api'
         methods: {
         submitForm(formName) {
             this.$refs[formName].validate().then(() =>{
-                this.$store.dispatch('adminRegister',this.ruleForm).then(res =>{
+                request.adminRegister({...this.ruleForm}).then(res =>{
+                    this.$commonUtils.setMessage('success','注册成功')
                     // 注册成功跳转到登录页面
                     this.$router.push(
                         {name:'tableloginIn'}
@@ -167,7 +172,7 @@ import request from '../../api/api'
         // 跳转到登录页面
         onGoLogin() {
             this.$router.push({
-                path:'login',   
+                name:'tableloginIn',   
             })
         }
         }
@@ -212,6 +217,9 @@ import request from '../../api/api'
         }
         
     }
+}
+.heade_denglu {
+ line-height: 180px;
 }
 .registered-head {
     height: 120px;

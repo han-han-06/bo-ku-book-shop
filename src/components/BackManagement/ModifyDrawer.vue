@@ -46,6 +46,7 @@
                     list-type="picture"
                     >
                     <el-button size="small" type="primary">点击上传</el-button>
+                    <div slot="tip" class="el-upload__tip">只能上传一张主图</div>
                     <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
                 </el-upload>
                 <el-dialog :visible.sync="dialogVisible2">
@@ -68,15 +69,16 @@
                     list-type="picture"
                     >
                     <el-button size="small" type="primary">点击上传</el-button>
-                    <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                    
                 </el-upload>
                 <!-- -->
             </el-form-item>
-            <el-dialog :visible.sync="dialogVisible">
-                <img width="100%" :src="dialogImageUrl" alt="">
-            </el-dialog>
+            <div >
+                <el-dialog :visible.sync="dialogVisible">
+                    <img width="100%" :src="dialogImageUrl" alt="">
+                </el-dialog>
+            </div>
             <el-form-item>
-                
                 <el-button type="primary" @click="onSave('ruleForm')">修改</el-button>
                 <el-button @click="resetForm('ruleForm')">重置</el-button>
             </el-form-item>
@@ -139,20 +141,18 @@ export default {
                 ],
             },
             // 图书详情列表
-            bookPictures:[{name:'',url:""}],
+            bookPictures:[{url:""}],
             bookId:"",
             // 是否显示主图图片
             dialogVisible2:false,
             // 封面list，实际上封面只能有一个
             picArr:[
-                {
-                    name:'',url:""
-                }
+                {url:""}
             ],
             // 封面路径 
             dialogImageUrl2:'',
             // 图片是否能显示
-            flagPic:false
+            picDialog:false
         }
     },
     props:{
@@ -170,27 +170,35 @@ export default {
         // bookPictures
         let arr = this.ruleForm.bookPictures
         let a = []
-        a  = arr.map(el =>{
-            if(el.mainPic) {
-                let obj  = {}
-                // 获取相应的url
-                obj.url = el.pictureUrl
-                this.picArr =  [obj]
-                // return 一个空数组
-                return {name:'',url:""}
-                // return {}
-              
-            }else if(el.mainPic===false){
-                // 存在
-                let obj  = {}
-                obj.url = el.pictureUrl
-                return obj
-            }else {
-                return {}
+        for(let item of arr) {
+            console.log('item',item)
+            if(item.mainPic) {
+                let url = item.pictureUrl
+                this.picArr =  [{url}]
+            }else if(item.mainPic === false) {
+                this.bookPictures = [{url:item.pictureUrl}]
             }
-        })
-        // console.log('a',a)  
-        this.bookPictures = a
+        }
+        // a  = arr.map(el =>{
+        //     if(el.mainPic) {
+        //         let obj  = {}
+        //         // 获取相应的url
+        //         obj.url = el.pictureUrl
+        //         this.picArr =  [obj]
+        //         // return 一个空数组
+        //         return {name:'',url:""}
+        //         // return {}
+        //     }else if(el.mainPic===false){
+        //         // 存在
+        //         let obj  = {}
+        //         obj.url = el.pictureUrl
+        //         return obj
+        //     }else {
+        //         return {}
+        //     }
+        // })
+        // console.log
+       
     },
     methods:{
         // 修改的保存
@@ -198,14 +206,20 @@ export default {
         this.$refs[formName].validate((valid) => {
             if (valid) {
                 let {bookId} = this
-                // let adminId = this.$store.state.adminId
-                // adminId = 'a103'
                 let adminId = this.$store.state.adminId
-                adminId = 'a103'
-                // console.log('bookPictures',this.bookPictures)
-                let data = {...this.ruleForm,adminId}
+                let bookPictures = []
+                this.bookPictures.map(el =>{
+                    let obj = {}
+                    obj.mainPic = false
+                    obj.pictureUrl = el.url
+                    bookPictures.push(obj)
+                })
+                let obj2 = {}
+                obj2.pictureUrl = this.picArr[0].url
+                obj2.mainPic = true
+                bookPictures.push(obj2)
+                let data = {...this.ruleForm,adminId,bookPictures}
                 request.saveModifyFrom(bookId,data).then(res =>{
-                    // console.log('res')
                     // 关闭侧滑
                     this.$emit('close-draw')
                 })
@@ -233,7 +247,7 @@ export default {
         // 图片上传成功
         successFile(response,file,fileList) {
             let obj = {}
-            obj.MainPic = false
+            obj.mainPic = false
             obj.url = response.result
             this.bookPictures.push(obj)
             // console.log('this.imgUrlList',this.imgUrlList)
@@ -250,7 +264,7 @@ export default {
             // 这个是路径
             // console.log('response.result',response.result)
             let obj  = {}
-            obj.MainPic = true
+            obj.mainPic = true
             obj.url = response.result
             // 上传的是主图片，需要把它的标识变成true，是不是其他地方都不需要动吧
             this.picArr.push(obj)
@@ -258,24 +272,40 @@ export default {
         // 移除文件
         handleRemove2(file, fileList) {
             // 移除文件的时候获取当前的list，进行赋值
-            let arr = [...fileList]
-            // 获取当前存在的url3
-            this.picArr = arr.map(el => {
-                let obj = {}
-                obj.MainPic = truedou
-                obj.url = el.response.result
-                return obj
-            })
+            if(fileList.length) {
+                let arr = [...fileList]
+                // 获取当前存在的url3
+                this.picArr = arr.length && arr.map(el => {
+                    let obj = {}
+                    obj.mainPic = true
+                    obj.url = el.response.result
+                    return obj
+                })
+            }else {
+                this.picArr = []
+            }
+            
             // console.log('bookPictures,移除',this.bookPictures
         },
     }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss" >
+    .el-drawer__body {
+        max-height: calc(100% - 10px);
+        overflow-y: auto;
+        padding: 40px;
+        padding-top: 20px;
+    }
 .modify-drawer {
-    max-height: calc(100% - 73px);
-    overflow-y: auto;
+    // max-height: calc(100% - 73px);
+    // overflow-y: auto;
     padding: 40px;
     box-sizing: border-box;
+    .demo-ruleForm {
+        height: 100%;
+        // padding-bottom: 20px;
+        box-sizing: border-box;
+    }
 }
 </style>

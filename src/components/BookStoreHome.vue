@@ -4,13 +4,14 @@
         <!-- 头部 -->
         <div class="head">
                     <BookHeader
+                    :customerName='customerName'
                     @select-cate='selectCate'></BookHeader>
                 </div>
         <div class="home-book">
         <el-container>
             <el-main>
                 <!-- 轮播 -->
-                <div class="lunbo">
+                <div class="lunbo" v-if='!flag'>
                     <BookLunBo>轮播</BookLunBo>
                 </div>
                 <!-- 这个盒子是三个书的分类 -->
@@ -40,10 +41,7 @@
                 <div v-if="!hiddenFenLei">
                     <!-- 图片怎么显示呢，就多显示几排么 -->
                     <BookJingXuan
-                    :arrList='arrList'
-                    ></BookJingXuan>
-                    <BookJingXuan
-                    :arrList='arrList'
+                    :arrList='categoryList'
                     ></BookJingXuan>
                 </div>
             </el-main>
@@ -55,7 +53,6 @@
     </div>
     </div>
 </template>
-
 <script>
 import request from '../api/api'
 export default {
@@ -82,12 +79,17 @@ export default {
                 page:1,
                 size:20
             },
-            userId:''
+            userId:'',
+            customerName:'',
+            flag:0,
+            pageInfo:{
+                page:1,
+                size:20
+            }
         }
     },
     created() {
-        // 获取id
-        this.userId = this.$store.dispatch.userId
+        
         // 一开始初始化的时候我得获取到他们的分类
         this.hiddenFenLei = true
         // 获取首页信息
@@ -95,11 +97,17 @@ export default {
         // 我需要请求一下所有的数据么
         // 根据图书类别查询相应的图书
         this.getClassifyBooks()
-        // 
+        let localId = sessionStorage.getItem("uesrId");
+        let localName = sessionStorage.getItem("userName");
+        this.customerName = localName ? localName : ''
+        if(!this.$store.state.userId) {
+            this.$store.state.userId = localId;
+        }
+        // 获取id
+        this.userId = sessionStorage.getItem("uesrId")
     },
     methods:{
         getHome() {
-
             let {page,size} = this.pageInfo
             request.getHomeInfo(page,size).then(res =>{
                 console.log('res',res)
@@ -122,10 +130,12 @@ export default {
             this.categoryId = value
             // 显示某一具体分类
             this.hiddenFenLei = false
+            let {page,size} = this.pageInfo
             // 进行数据的请求
-            request.getDiffBook(value).then(res =>{
+            request.getDiffBook(page,size,value).then(res =>{
                 // 获取改分类下的图书
-                this.categoryList = [...res]
+                this.categoryList = res.bookVOList
+                // this.categoryList
             })
         }
     }

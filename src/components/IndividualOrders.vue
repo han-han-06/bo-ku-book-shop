@@ -10,6 +10,7 @@
                 </div>
                 <div class="boku-zhuce">欢迎登录</div>
                 </div>
+                <div @click="backHome" class="back-top">返回首页</div>
             </div>
         </div>
         <!-- 订单中心哦 -->
@@ -24,7 +25,7 @@
             <!-- 操作变成已完成的那种就好 -->
             <span style="margin-right:40px">操作</span>
         </div>
-        <div>
+        <div v-if="arr.length">
             <div v-for="(item,index) in arr" :key="index" class="order-book_content">
                 <!-- 头部 -->
                 <div class="order-head">
@@ -57,11 +58,14 @@
                     </div>
                     <!-- 状态 -->
                     <div style="margin-left:229px;color:red">
-                        <el-button type="text" @click="confirmReceipt" style="color:red">去评价</el-button>
+                        <el-button type="text" @click="confirmReceipt(item)" style="color:red">去评价</el-button>
                         <!-- <el-button type="text">确认收货</el-button> -->
                     </div>
                 </div>
             </div>
+        </div>
+        <div v-else class="order-info">
+            <span>暂无订单信息</span>
         </div>
         <div class="order-page">
                 <!-- 分页 -->
@@ -92,7 +96,7 @@ export default {
                 page:1,
                 size:20
             },
-            totalOrder:30
+            totalOrder:30,
         }
     },
     created() {
@@ -111,11 +115,14 @@ export default {
             })
         },
         // 去评论
-        confirmReceipt() {
+        confirmReceipt(item) {
         
             // 确认收货后跳转到评论页面
             this.$router.push(
-                {name:'bookComment'}) 
+                {name:'bookComment',
+                params:{
+                        item:item
+                    }}) 
         },
          // 每页多少条
         handleSizeChange(val) {
@@ -127,6 +134,15 @@ export default {
             console.log('当前页',val)
             this.pageInfo.page = val
         },
+        // 返回首页
+        backHome () {
+            this.$router.push(
+                {
+                    name:"bookStoreHome",
+                  
+                }
+            )
+        } 
     }
 }
 </script>
@@ -168,6 +184,11 @@ export default {
         }
         
     }
+}
+.order-info {
+    width: 100%;
+    padding: 20px;
+    text-align: center;
 }
 .order-hea {
     margin-top: 20px;
@@ -224,6 +245,13 @@ export default {
         
         
     }
+}
+.back-top {
+    line-height: 180px;
+}
+.back-top:hover {
+    cursor: pointer;
+    color: red;
 }
 .order-page {
     margin-top: 20px;

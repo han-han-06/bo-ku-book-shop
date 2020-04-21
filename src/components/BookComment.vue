@@ -10,6 +10,7 @@
                     </div>
                     <div class="boku-zhuce">欢迎登录</div>
                     </div>
+                    <div @click="backHome" class="back-top">返回首页</div>
                 </div>
             </div>
             <!-- 评论区 -->
@@ -38,7 +39,7 @@
                         </el-input>
                     </div>
                     <div class="comment-con_third">
-                        <div 评论按钮 -->
+                        <div  >
                         <div class="comment-con_btn">
                             <el-button type="text" @click="onComment" class="comment-btn">发表评论</el-button>
                         </div>
@@ -60,15 +61,19 @@ export default {
         return {
             // 评论区
             comment:"",
-            commentStar:null,
-            colors: ['#99A9BF', '#F7BA2A', '#FF9900'] 
+            commentStar:0,
+            colors: ['#99A9BF', '#F7BA2A', '#FF9900'] ,
+            bookInfo:{}
         }
+    },
+    created() {
+        this.bookInfo = this.$route.params.item
     },
     methods:{
         onComment() {
             // 获取到商品id，评论内容，
             // 调取接口
-            let bookId = item.bookId
+            let {bookId} = this.bookInfo
             let customId = this.$store.state.userId
             let commentStar = this.commentStar
             let comment = this.comment
@@ -77,6 +82,13 @@ export default {
                 console.log('res',res)
                 this.$commonUtils.setMessage('success','评论成功')
             })
+        },
+        backHome() {
+            this.$router.push(
+                {
+                    name:"bookStoreHome",
+                }
+            )
         }
 
     }
@@ -120,6 +132,13 @@ export default {
         }
         }
     }
+}
+.back-top {
+    line-height: 180px;
+}
+.back-top:hover {
+    cursor: pointer;
+    color: red;
 }
 // 评论区
 .book-comment {

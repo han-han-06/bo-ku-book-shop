@@ -11,16 +11,19 @@
                         <span @click="addAddress" class="xinzeng-address">修改收货地址</span>
                     </div>
                     <div class="consignee-content">
-                        <div>
+                        <div  v-if="billingInfo">
                             <!-- 放用户名和手机号 -->
                             <div>
-                                <span class="buy-name">王涵</span>
-                                <span style="color:#999">15511351896</span>
+                                <span class="buy-name">{{billingInfo[0].address.receiver}}</span>
+                                <span style="color:#999">{{billingInfo[0].phone}}</span>
                             </div>
                             <!-- 放具体的地址 -->
                             <div class="juti-address">
-                                <span>河北省唐山市路北区四十八号小区</span>
+                                <span>{{billingInfo[0].address.address}}</span>
                             </div>
+                        </div>
+                        <div v-else>
+                            暂无收获地址
                         </div>
                     </div>
                 </div>
@@ -44,7 +47,6 @@
                     <div class="consignment-inventory_content" >
                         <div v-for="(item,index) in billingInfo" :key="index">
                             <!-- 商家说明 -->
-                            <!-- <p>商家：涵啊涵的店</p> -->
                             <!-- 图片和相应的书的书名 -->
                             <div class="inventory_content">
                                 <div class="inventory">
@@ -55,7 +57,7 @@
                                     <!-- 这个右边放这个书的名称和作者 -->
                                     <div class="inventory-book">
                                         <span>{{item.bookName}}</span>
-                                        <span>{{item.bookAuthor}}</span>
+                                        <span>{{item.bookDetail}}</span>
                                     </div>
                                 </div>
                                 <!-- 下面这块放价格 -->
@@ -89,52 +91,51 @@ export default {
         return {
             // 结算信息
             billingInfo:[],
-            // 你说你有点难追，想让我知难而退，礼物不需挑最贵，只要香榭的落叶
+            // 接收从修改地址返回的信息
+            addressInfo:{}
         }
     },
     created() {
         let pramas  = this.$store.state.pramas
         this.getInfoList(pramas)
+        // 接收从修改地址返回的信息
+        // console.log('返回的地址信息',this.$route.params.addressInfo)
+        this.addressInfo = this.$route.params.addressInfo
     },
     methods:{
         // 获取结账信息
         getInfoList(pramas) {
             request.getOrderInfo(pramas).then(res =>{
-                console.log('res',res)
+                // console.log('res',res)
+                // 如果修改地址信息存在的话
+                if(this.addressInfo) {
+                    res[0].address = this.addressInfo
+                }
                 this.billingInfo = res
             })
-            // 图书详情信息
-            // this.billingInfo = [
-            //     {
-            //         bookCount:5,
-            //         bookDetail:'恋爱这一个字，对屠格涅夫来说，或许是伤痛的字之一吧。梦想与现实之间的矛盾，性格与境遇之间的关系，所有存在的不如意与绝望，人生所有的不凑巧等，没有人比屠格涅夫更能将其描绘得那么好。',
-            //         bookName:'所爱隔山海',
-            //         bookNewPrice:58,
-            //         mainBookPicture:'http://120.26.175.109:8080/pictures/4aed9a2a-9e9b-45e1-b202-1592c4621ec61587024284750.jpg',
-            //         bookAuthor:'王涵'
-            //     }
-            // ]
+
         },
         // 立即结算，跳转到我的订单页面
         onPurchaseConfirm() {
             // console.log(222)
-            // 结算成功，跳转到订单页面
-//             {
-//   "addressId": "string",
-//   "settleAccountDTOS": [
-//     {
-//       "address": "string",
-//       "bookCount": 0,
-//       "bookId": "string",
-//       "orderPrice": "string",
-//       "phone": "string",
-//       "receiver": "string"
-//     }
-//   ],
-//   "userId": "string"
-// }re
+            // 结算成功，跳转到订单页面    
+            // 获取地址id
+            let addressId = this.billingInfo[0].address.addressId
+            // 获取订单信息
+            let settleAccountDTOS = []
+            this.billingInfo.map(el =>{
+                let obj = {}
+                obj.address = el.address.address
+                obj.bookCount = el.bookCount
+                obj.bookId = el.bookId
+                obj.orderPrice = el.bookCount*el.bookNewPrice
+                obj.receiver = el.address.receiver
+                obj.phone = el.address.phone
+                settleAccountDTOS.push(obj)
+            })
+            let userId = this.$store.state.userId
+            let data = {userId,settleAccountDTOS,addressId}
             request.savaOrder(data).then(res =>{
-                console.log('res',res)
                 this.$commonUtils.setMessage('success','结算成功')
                 this.$router.push({
                     name:'individualOrders'
@@ -275,8 +276,10 @@ export default {
                         display: flex;
                         .inventory-img {
                             width: 180px;
+                            padding-bottom: 10px;
                             img {
                                 width: 100%;
+                                height: 100%;
                             }
                         }
                         .inventory-book {
