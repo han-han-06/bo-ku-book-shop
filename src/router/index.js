@@ -22,6 +22,7 @@ const addAddress = ()=>import('@/components/AddAddress')
 const tableRegister = ()=> import('@/components/BackManagement/TableRegister')
 const bookComment = ()=> import('@/components/BookComment')
 const purchaseInfo = ()=>import('@/components/PurchaseInfo')
+const successPayment =()=>import('@/components/SuccessPayment')
 Vue.use(Router)
 const VueRouterPush = Router.prototype.push 
 Router.prototype.push = function push (to) {
@@ -69,6 +70,11 @@ export default new Router({
       path:'/bookShopCart',
       name:'bookShopCart',
       component:bookShopCart
+    },
+    {
+      path: '/successPayment',
+      name: 'successPayment',
+      component: successPayment
     },
     {
       path:'/purchasePage',

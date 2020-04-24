@@ -8,9 +8,9 @@
                     <div class="boku-logo">
                     <img class="boku-logo_img" src="../assets/images/logo.jpg">
                 </div>
-                <div class="boku-zhuce">欢迎登录</div>
+                <!-- <div class="boku-zhuce">欢迎登录</div> -->
                 </div>
-                <div @click="backHome" class="back-top">返回首页</div>
+                <div @click="backHome" class="back-top">首页</div>
             </div>
         </div>
         <!-- 订单中心哦 -->
@@ -20,7 +20,7 @@
             <span>订单详情</span>
             <span style="margin-left:53px">数量</span>
             <span>金额</span>
-            <span>收货人</span>
+            <span>地址</span>
             <!-- <span style="margin-right:53px">状态</span> -->
             <!-- 操作变成已完成的那种就好 -->
             <span style="margin-right:40px">操作</span>
@@ -30,8 +30,8 @@
                 <!-- 头部 -->
                 <div class="order-head">
                     <!-- 日期 -->
-                    <span>2020-04-11 20:20</span>
-                    <span style="margin-left:20px">订单号：162489499</span>
+                    <span>日期：{{item.orderTime}}</span>
+                    <span style="margin-left:20px">订单号：{{item.orderNumber}} </span>
                 </div>
                 <!-- 下面的内容 -->
                 <div class="order-con">
@@ -41,7 +41,7 @@
                             <img :src="item.bookPicture">
                         </div>
                         <div class="shu-cont_info">
-                            这个是书的内容,这个是书的内容呢
+                            {{item.bookName}}
                         </div>
                     </div>
                     <!-- 图书数量 -->
@@ -50,11 +50,11 @@
                     </div>
                     <!-- 图书价格 -->
                     <div style="margin-left:195px;color:red;flex-shink:0">
-                        <span>总额 ￥{{item.orderTotalPrice}}</span>
+                        <span>￥{{item.orderTotalPrice}}</span>
                     </div>
                     <!-- 收货人 -->
                     <div style="margin-left:200px;flex-warp:nowarp">
-                        <span>王涵</span>
+                        <span>{{item.address}}</span>
                     </div>
                     <!-- 状态 -->
                     <div style="margin-left:229px;color:red">
@@ -96,7 +96,7 @@ export default {
                 page:1,
                 size:20
             },
-            totalOrder:30,
+            totalOrder:0,
         }
     },
     created() {
@@ -107,11 +107,11 @@ export default {
     methods:{
         getComm() {
             let {page,size} = this.pageInfo
-            let userId = this.$store.state.userId
+            let userId = sessionStorage.getItem("userId")
             request.getOrderUser(page,size,userId).then(res =>{
-                console.log('res',res)
+                // console.log('res',res)
                 this.arr = res.orderVOList
-                this.totalOrderount = res.count
+                this.totalOrder = res.count
             })
         },
         // 去评论
@@ -237,7 +237,7 @@ export default {
                 }
             }
             .shu-cont_info {
-                margin-left: 10px;
+                margin-left: 30px;
                 width: 180px;
                 font-size: 15px;
             }

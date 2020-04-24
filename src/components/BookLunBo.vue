@@ -5,7 +5,7 @@
                 <el-carousel-item v-for="(item,index) in carouselData" :key="index">
                     <div class="lb-pic">
                         <!-- {{index}} -->
-                        <img :src="item.url">
+                        <img :src="item.picture">
                     </div>
                     <!-- <h3 class="small">{{ item }}</!--> -->
                 </el-carousel-item>
@@ -19,13 +19,13 @@ export default {
     data() {
         return {
             // 轮播图片
-            carouselData:[
-                {url:require('../assets/images/lunbo1.jpg'),title:'你看我叼吗1',id:1},
-                {url:require('../assets/images/lunbo2.jpg'),title:'你看我叼吗2',id:2},
-                {url:require('../assets/images/lunbo3.jpg'),title:'你看我叼吗3',id:3},
-                {url:require('../assets/images/lunbo4.jpg'),title:'你看我叼吗3',id:4},
-                {url:require('../assets/images/lunbo5.jpg'),title:'你看我叼吗3',id:5}
-            ]
+            // carouselData:[]
+        }
+    },
+    props:{
+        carouselData:{
+            type:Array,
+            default:() =>{[]}
         }
     },
     methods:{

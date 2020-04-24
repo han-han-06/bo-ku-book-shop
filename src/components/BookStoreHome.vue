@@ -12,7 +12,8 @@
             <el-main>
                 <!-- 轮播 -->
                 <div class="lunbo" v-if='!flag'>
-                    <BookLunBo>轮播</BookLunBo>
+                    <BookLunBo
+                    :carouselData='carouselData'>轮播</BookLunBo>
                 </div>
                 <!-- 这个盒子是三个书的分类 -->
                 <div v-if="hiddenFenLei">
@@ -24,7 +25,7 @@
                         ></BookJingXuan>
                     </div>
                     <!-- 特价图书 -->
-                    <div class="tejia">
+                    <div class="remai">
                         <BookJingXuan
                         :title="'热卖图书'"
                         :arrList='hotsellBooks'
@@ -38,9 +39,10 @@
                     </div>
                 </div>
                 <!-- 选中某一个盒子的时候展示某一个分类 -->
-                <div v-if="!hiddenFenLei">
+                <div v-if="!hiddenFenLei" class="select-class">
                     <!-- 图片怎么显示呢，就多显示几排么 -->
                     <BookJingXuan
+                    :title="titleList"
                     :arrList='categoryList'
                     ></BookJingXuan>
                 </div>
@@ -85,7 +87,9 @@ export default {
             pageInfo:{
                 page:1,
                 size:20
-            }
+            },
+            carouselData:[],
+            titleList:''
         }
     },
     created() {
@@ -96,51 +100,53 @@ export default {
         this.getHome()
         // 我需要请求一下所有的数据么
         // 根据图书类别查询相应的图书
-        this.getClassifyBooks()
-        let localId = sessionStorage.getItem("uesrId");
+        let localId = sessionStorage.getItem("userId")
         let localName = sessionStorage.getItem("userName");
         this.customerName = localName ? localName : ''
         if(!this.$store.state.userId) {
             this.$store.state.userId = localId;
         }
         // 获取id
-        this.userId = sessionStorage.getItem("uesrId")
+        this.userId =  sessionStorage.getItem("userId")
     },
     methods:{
         getHome() {
             let {page,size} = this.pageInfo
             request.getHomeInfo(page,size).then(res =>{
-                console.log('res',res)
+                // console.log('res',res)
                 this.selectedBooks  = res.selectedBooks.bookVOList
                 this.recommendedBooks  = res.recommendedBooks.bookVOList 
                 this.hotsellBooks  = res.hotsellBooks.bookVOList 
+                this.carouselData = res.rotationPictureList
             })
-        },
-        getClassifyBooks() {
-            // 图书类别
-            // let category = 1
-            let userId = this.userId
-            // request.getDiffBook({userId}).then(res =>{
-            //     console.log('图书信息',res)
-            //     this.classifyBooks = res
-            // })
         },
         // 选中某一分类的时候
         selectCate(value) {
-            this.categoryId = value
-            // 显示某一具体分类
-            this.hiddenFenLei = false
-            let {page,size} = this.pageInfo
-            // 进行数据的请求
-            request.getDiffBook(page,size,value).then(res =>{
-                // 获取改分类下的图书
-                this.categoryList = res.bookVOList
-                // this.categoryList
-            })
+            if(value ==='0') {
+                this.hiddenFenLei = true
+            }else {
+                if(value ==1) {
+                    this.titleList = "精选图书"
+                }else if(value ==2) {
+                    this.titleList = '推荐图书'
+                }else {
+                    this.titleList = "热卖图书"
+                }
+                this.categoryId = value
+                // 显示某一具体分类
+                this.hiddenFenLei = false
+                let {page,size} = this.pageInfo
+                // 进行数据的请求
+                request.getDiffBook(page,size,value).then(res =>{
+                    // 获取改分类下的图书
+                    this.categoryList = res.bookVOList
+                    // this.categoryList
+                })
+            }
         }
     }
 }
-</script>
+</script>   
 
 <style scoped>
     .home-book {
@@ -149,10 +155,18 @@ export default {
         margin: 0 auto;
     }
     .jingxuan {
+         background-color: #fff;
+         margin-bottom: 20px;
         /* height: 400px; */
         /* background: pink; */
     }
+    .remai,.tejia,.select-class {
+         background-color: #fff;
+         margin-bottom: 20px;
+    }
     .lunbo {
+        padding: 15px;
         margin-bottom: 20px;
+        background-color: #fff;
     }
 </style>

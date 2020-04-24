@@ -8,9 +8,9 @@
                     <div class="boku-logo">
                     <img class="boku-logo_img" src="../assets/images/logo.jpg">
                 </div>
-                <div class="boku-zhuce">欢迎登录</div>
+                <!-- <div class="boku-zhuce">欢迎登录</div> -->
                 </div>
-                <div @click="backHome" class="back-top">返回首页</div>
+                <div @click="backHome" class="back-top">首页</div>
             </div>
         </div>
             <router-view class="purchase"></router-view>
@@ -213,6 +213,7 @@ export default {
                     .inventory {
                         display: flex;
                         .inventory-img {
+                            flex-shrink: 0;
                             width: 180px;
                             img {
                                 width: 100%;

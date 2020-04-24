@@ -10,7 +10,7 @@
             </div>
             <div class="stage-head_merchant">
                 <span>欢迎登录</span>
-                <span>{{adminName}}</span>
+                <span style="color:red">{{adminName}}</span>
                 <span style="color:#409eff">|</span>
                 <span @click="onExit" class="exit">退出</span>
                 <div>

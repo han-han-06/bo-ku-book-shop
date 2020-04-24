@@ -38,7 +38,7 @@
                             @size-change="handleSizeChange"
                             @current-change="handleCurrentChange"
                             :current-page="pageInfo.page"
-                            :page-sizes="[20, 30, 40, 50]"
+                            :page-sizes="[10, 20, 30, 40]"
                             :page-size="pageInfo.size"
                             layout="total, sizes, prev, pager, next, jumper"
                             :total="total">
@@ -99,7 +99,7 @@ export default {
             },
             // 分页
             pageInfo:{
-                size:20,
+                size:10,
                 page:1,
             },
             total:0,
@@ -116,7 +116,7 @@ export default {
             // 获取每本书的bookId
             bookId:'',
             // 表格loading
-            tableLoading:false
+            tableLoading:false,
         }
     },
     created() {
@@ -139,6 +139,11 @@ export default {
             // 
             request.getListInfo(page,size,adminId).then(res =>{
                 // console.log('res',res)
+                // res.bookVOList.map(el =>{
+                //     this.bookClassify.map(el =>{
+
+                //     })
+                // })
                 this.tableData = res.bookVOList
                 this.total = res.count
                 setTimeout(()=>{

@@ -8,9 +8,9 @@
                         <div class="boku-logo">
                         <img class="boku-logo_img" src="../assets/images/logo.jpg">
                     </div>
-                    <div class="boku-zhuce">欢迎光临</div>
+                    <!-- <div class="boku-zhuce">欢迎光临</div> -->
                     </div>
-                    <div @click="backHome" class="back-top">返回首页</div>
+                    <div @click="backHome" class="back-top">首页</div>
                 </div>
             </div>
         </div>
@@ -85,6 +85,7 @@
         <div class="book-info_comments">
             <!-- 分为全部，好评，差评，都可以点击的那种，还有晒图么，到时候商量一下去 -->
             <div class="comments-head">
+                <span>商品评价</span>
                 <!-- <div>全部（2222）</div> -->
                 <!-- <div class="pinglun">好评（222）</div>
                 <div>差评（555）</div> -->
@@ -99,6 +100,10 @@
                     <!-- 这是日期 -->
                     <div class="comment-riqi">
                         <span>{{item.commentTime}}</span>
+                    </div>
+                     <div class="comment-pro">
+                         <span>评论人</span>
+                        <span>{{item.commentPerson}}</span>
                     </div>
                     </div>
                     <div>
@@ -162,8 +167,10 @@ export default {
     },
     created() {
         // 获取图书id
-        this.id = this.$store.state.bookId
+        this.id = sessionStorage.getItem("bookId")
+        let userId = sessionStorage.getItem("userId")
         console.log('id',this.id)
+        console.log('userId',userId)
         // 获取图书详情
         this.getBook(this.id)
         // 根据id查询单条数据
@@ -225,10 +232,12 @@ export default {
                 this.$commonUtils.setMessage('warning','请选择加购数量')
                 return
             }
+            let userId = sessionStorage.getItem("userId")
+            // console.log('userId',userId)
             // 这里应该先校验一下(比如是否登录啥的，然后再加入购物车。如果没登录，应该弹出登录/注册的页面)
-            if(this.$store.state.userId) {
+            if(userId) {
                 // 获取用户id
-                let customId = this.$store.state.userId
+                let customId = sessionStorage.getItem("userId")
                 // 获取图书id
                 let bookId = this.id
                 let data = {bookCount,customId,bookId}
@@ -245,17 +254,27 @@ export default {
             console.log('bookInfo',this.bookInfo)
             let bookId = this.bookInfo.bookId
             let count = this.purchaseQuantity
-            let userId = this.$store.state.userId
+            let userId = sessionStorage.getItem("userId")
             let data = {bookId,count,userId}
             console.log('data',data)
             if(!userId) {
                 this.$commonUtils.setMessage('warning','请先登录')
+            }else if(!count) {
+                this.$commonUtils.setMessage('warning','请选择购买数量')
             }else {
                 request.outrightPurchase(data).then(res =>{
-                // 先校验。没问题这里需要跳转到订单那里么
-                this.$router.push(
-                    {name:'purchaseInfo'}
-                )
+                    let address = res.address
+                    let arr = [res]
+                    
+                    arr = JSON.stringify(arr)
+                    sessionStorage.setItem("payInfo", arr);
+                    sessionStorage.setItem("address", JSON.stringify(address));
+
+                    // console.log('res结账',arr)
+                    // 先校验。没问题这里需要跳转到订单那里么
+                    this.$router.push(
+                        {name:'purchaseInfo'}
+                    )
             })
             }
             
@@ -468,8 +487,9 @@ export default {
             display: flex;
             height: 60px;
             line-height: 60px;
-            background-color: #f7f7f7;
-            padding-left: 20px;
+            background-color: #fff;
+            margin-left: 15px;
+            margin-bottom: 20px;
             .pinglun {
                 margin: 0 20px;
             }
@@ -491,6 +511,12 @@ export default {
             .comment-riqi {
                 color: #cccccc;
                 margin-left: 40px;
+                margin-right: 50px;
+            }
+            .comment-pro {
+                color: #cccccc;
+                // margin-left: 40px;
+                // margin-right: 10px;
             }
         };
     }

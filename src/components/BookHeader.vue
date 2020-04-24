@@ -6,13 +6,13 @@
             <div class="head-top_t">
                 <div class="logo">
                     <img src="../assets/images/logo.jpg">
-                    <span class="shop-mall">图书商城</span>
+                    <!-- <span class="shop-mall">图书商城</span> -->
                 </div>
                 <div >
                     <span>欢迎光临，
                         <!-- 如果用户名存在的话显示当前用户名，不存在的话显示请登录，跳转到登录页面 -->
                         <i class="please-log" @click="onLogin" v-if="!customerName" >请登录</i>
-                        <i v-else>{{customerName}}</i>
+                        <i v-else style="color:red">{{customerName}}</i>
                     </span>
                 </div>
             </div>
@@ -96,8 +96,8 @@ export default {
         goToCar() {
             // 跳转到购物车页面，是不是要携带一下id，还是不携带了，跳转过程中，需要判断一下有没有人员id，没有请登录
             // 获取人员id
-            let peopleId = this.$store.state.userId
-            console.log('peopleId',peopleId)
+            let peopleId = sessionStorage.getItem("userId")
+            // console.log('peopleId',peopleId)
             if(peopleId) {
                 this.$router.push({  //核心语句
                     name:'bookShopCart',   //跳转的路径
@@ -112,8 +112,8 @@ export default {
         },
         // 跳转到订单界面
         goToDing() {
-            let peopleId = this.$store.state.userId
-            console.log('peopleId',peopleId)
+            let peopleId = sessionStorage.getItem("userId")
+            // console.log('peopleId',peopleId)
             if(peopleId) {
                 this.$router.push({  //核心语句
                     name:'individualOrders',   //跳转的路径
@@ -129,7 +129,7 @@ export default {
     }
 }
 </script>
-<style scoped lang='scss'>
+<style  lang='scss'>
 .book-head {
     i {
         font-style:normal
@@ -218,6 +218,20 @@ export default {
         .middle-ca_a:hover {
             cursor: pointer;
         }
+    }
+     .el-tabs__item.is-active {
+        color: red;
+    }
+    .el-tabs__item {
+        font-size:18px;
+        font-weight: 700;
+        color: #777;
+    }
+    .el-tabs__item:hover {
+        color: red;
+    }
+    .el-tabs__active-bar {
+        background-color: red;
     }
 }
 </style>

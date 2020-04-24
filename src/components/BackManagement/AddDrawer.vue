@@ -107,7 +107,7 @@ export default {
                         value: 2
                     },
                     {
-                        label: "科普图书",
+                        label: "热卖图书",
                         value: 3
                     }
                 ],

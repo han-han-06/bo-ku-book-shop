@@ -44,8 +44,9 @@ export default {
     methods:{
         goDetail(item) {
             let {bookId} = item
+            console.log('bookId',bookId)
             this.$store.state.bookId = bookId
-            
+            sessionStorage.setItem("bookId", bookId);
             // 跳转到详情
             this.$router.push(
                 {
@@ -58,6 +59,7 @@ export default {
 </script>
 <style scoped lang='scss'>
 .lanmu {
+   
     height: 100%;
     width: 100%;
     overflow: hidden;
@@ -65,7 +67,7 @@ export default {
         margin-left: 20px;
         font-size: 16px;
         font-weight: 700;
-        color: #666;
+        color: red;
     }
     // 
 }

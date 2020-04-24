@@ -15,7 +15,7 @@
         <div class="address-content" v-if="!isAddress">
             <div v-for="(item,index) in addressList" :key="index" class="address">
                 <div class="address-user">
-                    <el-checkbox v-model="addressList[index].isCheck">备选项</el-checkbox>
+                    <el-checkbox v-model="addressList[index].isCheck" @change='changeAddress(addressList[index].isCheck,index)'></el-checkbox>
                     <span>{{item.receiver}}</span>
                     <span>{{item.phone}}</span>
                     <span class="del-btn" @click="delAddress(item)">删除</span>
@@ -50,7 +50,7 @@ export default {
     methods:{
         getAddressInfo() {
             // 获取相应的用户id
-            let userId = this.$store.state.userId
+            let userId = sessionStorage.getItem("userId")
             request.getAddressId(userId).then(res =>{
                 this.addressList = res
                 this.addressList.map(el =>{
@@ -82,6 +82,8 @@ export default {
                     addressInfo = el
                 }
             })
+            sessionStorage.setItem("address",JSON.stringify(addressInfo))
+            console.log('addressInfo',addressInfo)
             // let addressInfo = 
             this.$router.push(
                 {name:'purchaseInfo',
@@ -98,7 +100,13 @@ export default {
                 // 刷新列表
                 this.getAddressInfo()
             })
-        } 
+        },
+        // 改变收货地址
+        changeAddress(val,index) {
+            let obj = this.addressList[index]
+            obj.isCheck = val
+            this.$set(this.addressList,index,obj)
+        }
     }
 }
 </script>

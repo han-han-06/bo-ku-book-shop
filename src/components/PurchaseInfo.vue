@@ -11,15 +11,16 @@
                         <span @click="addAddress" class="xinzeng-address">修改收货地址</span>
                     </div>
                     <div class="consignee-content">
-                        <div  v-if="billingInfo">
+                        <div  v-if="realAddress">
                             <!-- 放用户名和手机号 -->
                             <div>
-                                <span class="buy-name">{{billingInfo[0].address.receiver}}</span>
-                                <span style="color:#999">{{billingInfo[0].phone}}</span>
+                                <!-- {{realAddress}} -->
+                                <span class="buy-name">{{realAddress.receiver}}</span>
+                                <span style="color:#999">{{realAddress.phone}}</span>
                             </div>
                             <!-- 放具体的地址 -->
                             <div class="juti-address">
-                                <span>{{billingInfo[0].address.address}}</span>
+                                <span>{{realAddress.address}}</span>
                             </div>
                         </div>
                         <div v-else>
@@ -92,27 +93,34 @@ export default {
             // 结算信息
             billingInfo:[],
             // 接收从修改地址返回的信息
-            addressInfo:{}
+            addressInfo:{
+            },
+            // 页面上的真正的地址
+            realAddress:{}
         }
     },
     created() {
-        let pramas  = this.$store.state.pramas
-        this.getInfoList(pramas)
-        // 接收从修改地址返回的信息
-        // console.log('返回的地址信息',this.$route.params.addressInfo)
-        this.addressInfo = this.$route.params.addressInfo
+        // if(this.$route.params.addressInfo) {
+        //     this.addressInfo = this.$route.params.addressInfo
+        // }
+        this.getInfoList()
     },
     methods:{
         // 获取结账信息
-        getInfoList(pramas) {
-            request.getOrderInfo(pramas).then(res =>{
-                // console.log('res',res)
-                // 如果修改地址信息存在的话
-                if(this.addressInfo) {
-                    res[0].address = this.addressInfo
-                }
-                this.billingInfo = res
-            })
+        getInfoList() {
+            // 获取结账信息
+            let arr = sessionStorage.getItem("payInfo")
+            let address = sessionStorage.getItem("address")
+            this.realAddress = JSON.parse(address)
+            arr = JSON.parse(arr)
+            // console.log('this.addressInfo.receiver',this.addressInfo.receiver)
+            // if (!JSON.stringify(this.addressInfo) === '{}') {
+            //     console.log(22222)
+            //     this.realAddress = this.addressInfo
+            //     console.log('rrrrr',this.realAddress)
+            // }
+            console.log('realAddress66666',this.realAddress)
+            this.billingInfo = arr
 
         },
         // 立即结算，跳转到我的订单页面
@@ -120,25 +128,25 @@ export default {
             // console.log(222)
             // 结算成功，跳转到订单页面    
             // 获取地址id
-            let addressId = this.billingInfo[0].address.addressId
+            let addressId = this.realAddress.addressId
             // 获取订单信息
             let settleAccountDTOS = []
             this.billingInfo.map(el =>{
                 let obj = {}
-                obj.address = el.address.address
+                obj.address = this.realAddress.address
                 obj.bookCount = el.bookCount
                 obj.bookId = el.bookId
                 obj.orderPrice = el.bookCount*el.bookNewPrice
-                obj.receiver = el.address.receiver
-                obj.phone = el.address.phone
+                obj.receiver =  this.realAddress.receiver
+                obj.phone =  this.realAddress.phone
                 settleAccountDTOS.push(obj)
             })
-            let userId = this.$store.state.userId
+            let userId = sessionStorage.getItem("userId")
             let data = {userId,settleAccountDTOS,addressId}
             request.savaOrder(data).then(res =>{
                 this.$commonUtils.setMessage('success','结算成功')
                 this.$router.push({
-                    name:'individualOrders'
+                    name:'successPayment'
                 })
             })
             
@@ -277,6 +285,7 @@ export default {
                         .inventory-img {
                             width: 180px;
                             padding-bottom: 10px;
+                            flex-shrink: 0;
                             img {
                                 width: 100%;
                                 height: 100%;
@@ -293,13 +302,16 @@ export default {
                     color: red;
                     height: 100%;
                     line-height: 125px;
+                    margin-left: 20px;
                 }
                 
             }
             .shulaing {
                 height: 100%;
                 line-height: 125px;
-                    margin-right: 120px;
+
+                margin-left: 20px;
+                    margin-right: 20px;
                     color: #ccc;
                 }
         }

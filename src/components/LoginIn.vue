@@ -6,7 +6,7 @@
             <div class="registered-heade_content">
                 <div class="heade_content">
                     <div class="boku-logo">
-                        <!-- <img class="boku-logo_img" src="../assets/images/logo.jpg"> -->
+                        <img class="boku-logo_img" src="../assets/images/logo.jpg">
                     </div>
                     <div class="boku-zhuce">欢迎登录</div>
                     
@@ -74,7 +74,7 @@ import request from '../api/api'
             this.$refs[formName].validate().then(res =>{
                 request.logIn(this.ruleForm).then((res) =>{
                     // 将用户信息存储到本地
-                    sessionStorage.setItem("uesrId", res.userId);
+                    sessionStorage.setItem("userId", res.userId);
                     sessionStorage.setItem("userName", res.userName);
                     this.$store.state.userId = res.userId
                     this.$commonUtils.setMessage('success','登录成功')
@@ -131,6 +131,7 @@ import request from '../api/api'
     left: 0;
     top: 0;
     box-shadow:0px 5px 10px 0px #e5e7eb;
+    background-color: #fff;
     display: flex;
     justify-content: space-between;
     .registered-heade_content {

@@ -10,9 +10,9 @@
                         <div class="boku-logo">
                         <img class="boku-logo_img" src="../assets/images/logo.jpg">
                     </div>
-                    <div class="boku-zhuce">欢迎登录</div>
+                    <!-- <div class="boku-zhuce">欢迎登录</div> -->
                     </div>
-                     <div @click="backHome" class="back-top">返回首页</div>
+                    <div @click="backHome" class="back-top">首页</div>
                 </div>
             </div>
         </div>
@@ -161,7 +161,7 @@ export default {
     },
     methods:{
         getCarInfo() {
-            let customId = this.$store.state.userId
+            let customId = sessionStorage.getItem("userId")
             let {page,size} = this.pageInfo
             request.getCarMess(page,size,customId).then(res =>{
                 // console.log('购物车内容',res)
@@ -194,7 +194,7 @@ export default {
                 this.getTotalPrice(index)
                 let bookCount = con.bookCount
                 let bookId = con.bookId
-                let customId = this.$store.state.userId
+                let customId = sessionStorage.getItem("userId")
                 request.modifyCarInfo({bookCount,bookId,customId}).then(res =>{
                     console.log(222,res)
                 })
@@ -218,19 +218,20 @@ export default {
                     }
                 })
                 // 用户id
-                let userId  = this.$store.state.userId
+                let userId  =  sessionStorage.getItem("userId")
                 // let data = {bookIds,userId}
-                this.$store.state.pramas = {
+                let pramas = {
                         bookIds,
                         userId
                     }
-                this.$router.push(
-                    {name:'purchaseInfo',
-                    params:{
-                        bookIds,
-                        userId
-                    }}
-                )
+                    request.getOrderInfo(pramas).then(res =>{
+                        let address = res[0].address
+                        sessionStorage.setItem("payInfo", JSON.stringify(res))
+                        sessionStorage.setItem("address", JSON.stringify(address));
+                        this.$router.push(
+                            {name:'purchaseInfo'}
+                        )
+                    })
             }else {
                 this.$commonUtils.setMessage('warning','请选择结账商品')
             }
@@ -251,7 +252,7 @@ export default {
             // 调取接口，更新后台图书信息
             let bookCount = con.bookCount
             let bookId = con.bookId
-            let customId = this.$store.state.userId
+            let customId =  sessionStorage.getItem("userId")
             request.modifyCarInfo({bookCount,bookId,customId}).then(res =>{
                 console.log(222,res)
             })
@@ -277,12 +278,13 @@ export default {
             // 获取图书id
             let bookId = item.bookId
             // 获取顾客id
-            let customId = this.$store.state.userId
+            let customId = sessionStorage.getItem("userId")
 
             // let data = {}
             // 删除事件
             request.deleteCarInfo(customId,bookId).then(res =>{
                 this.$commonUtils.setMessage('success','删除成功')
+                this.getCarInfo()
             })
         },
         backHome() {
@@ -410,6 +412,7 @@ export default {
                     .car-img {
                         width: 80px;
                         height: 80px;
+                        margin-right: 20px;
                         // border:2px solid yellow;
                         img {
                             width: 100%;

@@ -8,9 +8,9 @@
                         <div class="boku-logo">
                         <img class="boku-logo_img" src="../assets/images/logo.jpg">
                     </div>
-                    <div class="boku-zhuce">欢迎登录</div>
+                    <!-- <div class="boku-zhuce">欢迎登录</div> -->
                     </div>
-                    <div @click="backHome" class="back-top">返回首页</div>
+                    <div @click="backHome" class="back-top">首页</div>
                 </div>
             </div>
             <!-- 评论区 -->
@@ -74,13 +74,18 @@ export default {
             // 获取到商品id，评论内容，
             // 调取接口
             let {bookId} = this.bookInfo
-            let customId = this.$store.state.userId
+            let customId =sessionStorage.getItem("userId")
             let commentStar = this.commentStar
             let comment = this.comment
             let data = {bookId,customId,commentStar,comment}
             request.addComments(data).then(res =>{
                 console.log('res',res)
                 this.$commonUtils.setMessage('success','评论成功')
+                this.$router.push(
+                {
+                    name:"bookStoreHome",
+                }
+            )
             })
         },
         backHome() {

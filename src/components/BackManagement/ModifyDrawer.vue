@@ -107,7 +107,7 @@ export default {
                         value: 2
                     },
                     {
-                        label: "科普图书",
+                        label: "热卖图书",
                         value: 3
                     }
             ],
@@ -141,7 +141,7 @@ export default {
                 ],
             },
             // 图书详情列表
-            bookPictures:[{url:""}],
+            bookPictures:[],
             bookId:"",
             // 是否显示主图图片
             dialogVisible2:false,
@@ -169,36 +169,14 @@ export default {
         this.bookId = this.ruleForm.bookId
         // bookPictures
         let arr = this.ruleForm.bookPictures
-        let a = []
         for(let item of arr) {
-            console.log('item',item)
             if(item.mainPic) {
                 let url = item.pictureUrl
                 this.picArr =  [{url}]
             }else if(item.mainPic === false) {
-                this.bookPictures = [{url:item.pictureUrl}]
+                this.bookPictures.push({url:item.pictureUrl})
             }
         }
-        // a  = arr.map(el =>{
-        //     if(el.mainPic) {
-        //         let obj  = {}
-        //         // 获取相应的url
-        //         obj.url = el.pictureUrl
-        //         this.picArr =  [obj]
-        //         // return 一个空数组
-        //         return {name:'',url:""}
-        //         // return {}
-        //     }else if(el.mainPic===false){
-        //         // 存在
-        //         let obj  = {}
-        //         obj.url = el.pictureUrl
-        //         return obj
-        //     }else {
-        //         return {}
-        //     }
-        // })
-        // console.log
-       
     },
     methods:{
         // 修改的保存
@@ -218,6 +196,9 @@ export default {
                 obj2.pictureUrl = this.picArr[0].url
                 obj2.mainPic = true
                 bookPictures.push(obj2)
+                this.ruleForm.bookOldPrice = `${this.ruleForm.bookOldPrice}`
+                
+                 this.ruleForm.bookNewPrice = `${this.ruleForm.bookNewPrice}`
                 let data = {...this.ruleForm,adminId,bookPictures}
                 request.saveModifyFrom(bookId,data).then(res =>{
                     // 关闭侧滑
