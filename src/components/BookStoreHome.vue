@@ -6,7 +6,16 @@
                     <BookHeader
                     :customerName='customerName'
                     @select-cate='selectCate'></BookHeader>
-                </div>
+        </div>
+        <!-- 搜索框,是不是模糊搜索 -->
+        <div>
+            <el-autocomplete
+                v-model="bookName"
+                :fetch-suggestions="querySearchAsync"
+                placeholder="请输入书名"
+                @select="handleSelect"
+            ></el-autocomplete>
+        </div>
         <div class="home-book">
         <el-container>
             <el-main>
@@ -143,7 +152,12 @@ export default {
                     // this.categoryList
                 })
             }
-        }
+        },
+        // 相应的搜索
+        querySearchAsync(queryString, cb) {
+            console.log('queryString',queryString)
+            console.log('cb',cb)
+        },
     }
 }
 </script>   

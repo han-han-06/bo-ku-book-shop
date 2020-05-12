@@ -1,5 +1,6 @@
 <template>
 <div>
+    <!-- 支付成功页面 -->
     <div class="registered-head">
                 <div class="registered-heade_content">
                     <div class="heade_content">

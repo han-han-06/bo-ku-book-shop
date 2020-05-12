@@ -143,12 +143,14 @@ export default {
             })
             let userId = sessionStorage.getItem("userId")
             let data = {userId,settleAccountDTOS,addressId}
-            request.savaOrder(data).then(res =>{
-                this.$commonUtils.setMessage('success','结算成功')
-                this.$router.push({
-                    name:'successPayment'
+            request.savaOrder(data).then(
+                res =>{
+                    // 跳转到相应的扫描二维码的页面
+                    // this.$commonUtils.setMessage('success','结算成功')
+                    this.$router.push({
+                        name:'qrCode'
+                    })
                 })
-            })
             
         },
         // 新增收获地址。跳转到收获地址页面

@@ -18,11 +18,17 @@ const backStageFrame =()=>import('@/components/BackManagement/BackStageFrame')
 const userAddress = ()=>import('@/components/UserAddress')
 // 订单详情
 const individualOrders =()=>import('@/components/IndividualOrders')
+// 扫描二维码
+const qrCode =()=>import('@/components/QrCode')
+// confirmPay
+// 确认支付页面
+const confirmPay =()=>import('@/components/ConfirmPay')
 const addAddress = ()=>import('@/components/AddAddress')
 const tableRegister = ()=> import('@/components/BackManagement/TableRegister')
 const bookComment = ()=> import('@/components/BookComment')
 const purchaseInfo = ()=>import('@/components/PurchaseInfo')
 const successPayment =()=>import('@/components/SuccessPayment')
+const homeTab =()=>import('@/components/BackManagement/HomeTab')
 Vue.use(Router)
 const VueRouterPush = Router.prototype.push 
 Router.prototype.push = function push (to) {
@@ -70,6 +76,18 @@ export default new Router({
       path:'/bookShopCart',
       name:'bookShopCart',
       component:bookShopCart
+    },
+    // 扫描二维码
+    {
+      path:'/qrCode',
+      name:'qrCode',
+      component:qrCode
+    },
+    // 确认支付
+    {
+      path:"/confirmPay",
+      name:'confirmPay',
+      component:confirmPay
     },
     {
       path: '/successPayment',
@@ -127,9 +145,9 @@ export default new Router({
       children:[
         // 后台首页
         {
-          path:'manageHome',
-          name:'manageHome',
-          component:manageHome
+          path:'homeTab',
+          name:'homeTab',
+          component:homeTab
         },
       ]
     }
