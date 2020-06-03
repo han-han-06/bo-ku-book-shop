@@ -73,9 +73,16 @@ import request from '../api/api'
             // console.log(22222)
             this.$refs[formName].validate().then(res =>{
                 request.logIn(this.ruleForm).then((res) =>{
+                    console.log('111res',res)
                     // 将用户信息存储到本地
                     sessionStorage.setItem("userId", res.userId);
                     sessionStorage.setItem("userName", res.userName);
+                    // 将用户信息存储到本地
+                    sessionStorage.setItem("userPassword", res.userPassword);
+                    sessionStorage.setItem("userPhone", res.userPhone);
+                    sessionStorage.setItem("userSex", res.userSex);
+                    // 管理员身份
+                    // sessionStorage.setItem("adminSex", res.isSuperAdmin);
                     this.$store.state.userId = res.userId
                     this.$commonUtils.setMessage('success','登录成功')
                     // 跳转到首页
@@ -119,7 +126,6 @@ import request from '../api/api'
                 name:'registered'
             })
         },
-        // 
         }
     }
 </script>

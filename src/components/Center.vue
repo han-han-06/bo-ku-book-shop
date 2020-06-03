@@ -1,21 +1,21 @@
 <template>
-    <!-- 注册页面 -->
+    <!--   前台个人中心管理页面 -->
     <div class="registered">
+        <!-- 头部 放个注册的logo啥的-->
         <div class="registered-head">
             <div class="registered-heade_content">
                 <div class="heade_content">
                     <div class="boku-logo">
-                    <img class="boku-logo_img" src="../../assets/images/logo.jpg">
-                    </div>
-                    <div class="boku-zhuce">后台管理系统</div>
+                    <img class="boku-logo_img" src="../assets/images/logo.jpg">
                 </div>
-                <div class="heade_denglu">
-                    <span>已有帐号？</span>
-                    <span style="color:red;cusor:pointer" @click="onGoLogin">去登陆</span>
+                <div class="boku-zhuce">欢迎登录个人中心</div>
+                </div>
+                <div class="registered-heade_login">
+                    
+                    <span class="heade_login" @click.stop="onGoShou">首页</span>
                 </div>
             </div>
         </div>
-        <!-- 头部 放个注册的logo啥的-->
         <div class="registered-content">
             <div class="registered-content_form">
                 <el-form :model="ruleForm" status-icon 
@@ -24,19 +24,19 @@
                 label-width="100px" 
                 class="demo-ruleForm"
                 :hide-required-asterisk='true'>
-                    <el-form-item label="用户名" prop="adminName">
-                        <el-input v-model="ruleForm.adminName"></el-input>
+                    <el-form-item label="用户名" prop="userName">
+                        <el-input v-model="ruleForm.userName" :disabled="dis"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-radio-group v-model="ruleForm.adminSex" prop='adminSex'>
+                        <el-radio-group v-model="ruleForm.userSex" prop='userSex' :disabled="dis">
                             <el-radio :label="0">男</el-radio>
                             <el-radio :label="1">女</el-radio>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item label="手机号" prop="adminPhone">
-                        <el-input v-model="ruleForm.adminPhone"></el-input>
+                    <el-form-item label="手机号" prop="userPhone">
+                        <el-input v-model="ruleForm.userPhone" :disabled="true"></el-input>
                     </el-form-item>
-                    <el-form-item label="验证码" prop="verificationCode">
+                    <!-- <el-form-item label="验证码" prop="verificationCode">
                             <div class="verification">
                                 <el-input v-model="ruleForm.verificationCode" class="bbb"></el-input>
                                 <el-button @click.stop="getCode" class="aaa">
@@ -44,31 +44,33 @@
                                     <span>{{ranNum}}</span>
                                 </el-button>
                             </div>
-                    </el-form-item>   
-                    <el-form-item label="密码" prop="adminPassword">
-                        <el-input type="password" v-model="ruleForm.adminPassword" autocomplete="off"></el-input>
+                    </el-form-item>    -->
+                    <el-form-item label="密码" prop="userPassword">
+                        <!-- 禁用 -->
+                        <el-input type="password" v-model="ruleForm.userPassword" autocomplete="off" disabled></el-input>
                     </el-form-item>
-                    <el-form-item label="确认密码" prop="checkPass">
-                        <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
-                    </el-form-item>
-                    <el-form-item label="是否管理员" prop="">
-                        <el-radio-group v-model="ruleForm.isSuperAdmin" prop='isSuperAdmin'>
-                            <el-radio :label="true">是</el-radio>
-                            <el-radio :label="false">否</el-radio>
-                        </el-radio-group>
+                    <!-- -->
+                    <el-form-item>
+                        <!-- 保存 -->
+                        <el-button type="primary" @click="modify()" class="zhuce-btn">修改</el-button>
+                        <!-- 取消 -->
+                        <!-- <el-button type="primary" @click="submitForm('ruleForm')" class="zhuce-btn">保存</el-button> -->
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="submitForm('ruleForm')" class="zhuce-btn">注册</el-button>
+                        <!-- 保存 -->
+                        <!-- <el-button type="primary" @click="submitForm('ruleForm')" class="zhuce-btn">修改</el-button> -->
+                        <!-- 取消 -->
+                        <el-button type="primary" @click="submitForm('ruleForm')" class="zhuce-btn">保存</el-button>
                     </el-form-item>
+                    <!--  -->
                 </el-form>
             </div>
         </div>
     </div>
+    
 </template>
 <script>
-
-
-import request from '../../api/api'
+    import request from '../api/api'
     export default {
         data() {
         var validatePass = (rule, value, callback) => {
@@ -84,7 +86,7 @@ import request from '../../api/api'
         var validatePass2 = (rule, value, callback) => {
             if (value === '') {
             callback(new Error('请再次输入密码'));
-            } else if (value !== this.ruleForm.adminPassword) {
+            } else if (value !== this.ruleForm.userPassword) {
             callback(new Error('两次输入密码不一致!'));
             } else {
             callback();
@@ -107,14 +109,17 @@ import request from '../../api/api'
         }
         return {
             ruleForm: {
-                adminPassword: '',
+                userPassword: '',
                 checkPass: '',
-                adminSex:0,
-                adminName:''
+                userSex:0,
+                userName:'',
+                userPhone:''
             },
             ranNum:"",
+            // 禁用标识
+            dis:true,
             rules: {
-                adminPassword: [
+                userPassword: [
                     { validator: validatePass, trigger: 'blur' }
                 ],
                 checkPass: [
@@ -123,30 +128,59 @@ import request from '../../api/api'
                 verificationCode:[
                     { validator: checkCode, trigger: 'blur' }
                 ],
-                adminPhone:[
+                userPhone:[
                     {validator:checkPhone,trigger:'blur'}
                 ],
-                adminSex:[
+                userSex:[
                     { required: true, message: '请选择性别', trigger: 'change' }
                 ],
-                adminName:[
+                userName:[
                     { required: true, message: '请输入用户名', trigger: 'change' }
                 ]
-            }
+            },
+            userId:''
         };
         },
+        created() {
+            this.ruleForm.userName = sessionStorage.getItem("userName");
+            let userSex = sessionStorage.getItem("userSex");
+            if(userSex=='男') {
+                this.ruleForm.userSex = 0
+            }else{
+                this.ruleForm.userSex = 1
+            }
+            this.ruleForm.userPhone = sessionStorage.getItem("userPhone");
+            this.ruleForm.userPassword = sessionStorage.getItem("userPassword");
+            this.userId = sessionStorage.getItem("userId");
+        },
         methods: {
+        /**
+         * @author : 王涵
+         * @Date : 2020-05-19
+         * @information : 保存
+         * @parmams : 
+         */
         submitForm(formName) {
             this.$refs[formName].validate().then(() =>{
-                request.adminRegister({...this.ruleForm}).then(res =>{
-                    this.$commonUtils.setMessage('success','注册成功')
-                    // 注册成功跳转到登录页面
-                    this.$router.push(
-                        {name:'tableloginIn'}
-                    )
+                let {userId} = this
+                request.onModifyCenter({userId,...this.ruleForm}).then(res=>{
+                    // 消息提示
+                    this.$commonUtils.setMessage('success','修改成功')
+                    // // 跳转到登录页面
+                    this.$router.push({
+                        path:'login',   
+                    })
+                }).catch(err => {
+                    // console.log('err',err)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
                 })
             }).catch(err=>{
+                // 
             })
+        },
+        modify() {
+            // 取消禁用
+            this.dis = false
+            
         },
         // 重置
         resetForm(formName) {
@@ -176,57 +210,17 @@ import request from '../../api/api'
             this.ranNum = str
         },
         // 跳转到登录页面
-        onGoLogin() {
-            this.$router.push({
-                name:'tableloginIn',   
-            })
-        }
+        onGoShou() {
+            this.$router.push(
+                {
+                    name:"bookStoreHome"
+                }
+            )
+        },
         }
     }
 </script>
-
 <style scoped lang='scss'>
-.registered-head {
-    height: 120px;
-    width: 100%;
-    position: fixed;
-    left: 0;
-    top: 0;
-    background-color: #fff;
-    box-shadow:0px 5px 10px 0px #e5e7eb;
-    display: flex;
-    justify-content: space-between;
-    .registered-heade_content {
-        
-        height: 100%;
-        width: 1200px;
-        display: flex;
-        margin: 0 auto;
-        justify-content: space-between;
-        .heade_content {
-            display: flex;
-            .boku-logo { 
-            margin-right: 20px;
-            height: 100%;
-            font: 20px Arial,Verdana;
-            color: #EB4C44;
-            line-height: 150px;
-            .boku-logo_img {
-                margin-top: 43px;
-            }
-        } 
-        .boku-zhuce {
-            font: 20px Arial,Verdana;
-            color: #666;
-            margin-top: 70px;
-        }
-        }
-        
-    }
-}
-.heade_denglu {
- line-height: 180px;
-}
 .registered-head {
     height: 120px;
     width: 100%;
@@ -295,5 +289,6 @@ import request from '../../api/api'
             }
         }
     }
+    
 }
 </style>

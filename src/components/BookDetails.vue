@@ -46,7 +46,10 @@
                 </div>
                 <div class="bool-price">
                     <!-- 价格 -->
-                    当前价格：<span style="color:red">￥ {{bookInfo.bookNewPrice}}</span>元
+                    <div>
+                        当前价格：<span style="color:red">￥ {{bookInfo.bookNewPrice}}</span> 元
+                    </div>
+                    当前库存数量<span style="color:red"> {{bookInfo.stockCount}}</span> 本
                 </div>
                 <div class="shop-car">
                     <!-- 购物车 -->
@@ -76,6 +79,7 @@
             </span>
             <!-- 图片详情 -->
             <span style="margin-left:20px">
+                <span>{{bookInfo.bookDetail}}</span>
                 <!-- <img src="../assets/images/detail.jpg"> -->
             </span>
         </div>
@@ -95,6 +99,7 @@
                     <div class="block">
                     <el-rate
                         v-model="item.commentStar"
+                        disabled
                         :colors="colors">
                     </el-rate>
                     <!-- 这是日期 -->
@@ -197,15 +202,6 @@ export default {
                 this.totalComment = res.count
                 console.log('commentsList',this.commentsList)
             })  
-            this.commentsList = [
-                {
-                    bookId:'b108',
-                    commentContent:'这本书真的很不错',
-                    commentPerson:'莫某某',
-                    commentStar:1,
-                    commentTime:"2020-01-19"
-                }
-            ]
         },
         // 获取单条数据
         getBook() {
@@ -263,13 +259,12 @@ export default {
                 this.$commonUtils.setMessage('warning','请选择购买数量')
             }else {
                 request.outrightPurchase(data).then(res =>{
+                    console.log(2222,res)
                     let address = res.address
                     let arr = [res]
-                    
                     arr = JSON.stringify(arr)
                     sessionStorage.setItem("payInfo", arr);
                     sessionStorage.setItem("address", JSON.stringify(address));
-
                     // console.log('res结账',arr)
                     // 先校验。没问题这里需要跳转到订单那里么
                     this.$router.push(

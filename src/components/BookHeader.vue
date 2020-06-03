@@ -6,13 +6,13 @@
             <div class="head-top_t">
                 <div class="logo">
                     <img src="../assets/images/logo.jpg">
-                    <!-- <span class="shop-mall">图书商城</span> -->
+                    <span class="shop-mall">图书商城</span>
                 </div>
                 <div >
                     <span>欢迎光临，
                         <!-- 如果用户名存在的话显示当前用户名，不存在的话显示请登录，跳转到登录页面 -->
                         <i class="please-log" @click="onLogin" v-if="!customerName" >请登录</i>
-                        <i v-else style="color:red">{{customerName}}</i>
+                        <i v-else style="color:red" @click="goCenter">{{customerName}}</i>
                     </span>
                 </div>
             </div>
@@ -24,11 +24,21 @@
                 <!--这一栏放分类和加入购物车以及我的订单这两个就好了  -->
                 <el-tabs v-model="activeName" @tab-click="handleClick">
                     <el-tab-pane label="首页" name="0"></el-tab-pane>
-                    <el-tab-pane label="精选图书" name="1"></el-tab-pane>
-                    <el-tab-pane label="推荐图书" name="2"></el-tab-pane>
-                    <el-tab-pane label="热卖图书" name="3"></el-tab-pane>
+                    <el-tab-pane label="文学图书" name="1"></el-tab-pane>
+                    <el-tab-pane label="科普图书" name="2"></el-tab-pane>
+                    <el-tab-pane label="儿童图书" name="3"></el-tab-pane>
                 </el-tabs>
             </div>
+            <!-- 搜索功能 -->
+            <!-- <div>
+                <el-autocomplete
+                    size="small"
+                    v-model="bookName"
+                    :fetch-suggestions="querySearchAsync"
+                    placeholder="请输入书名"
+                    @select="handleSelect"
+                ></el-autocomplete>
+            </div> -->
             <!-- 加入购物车，我的订单 -->
             <div class="middle-car">
                 <div class="middle-ca_a">
@@ -56,7 +66,9 @@ export default {
             // 加购数量
             purchaseQuantity:0,
             // 当前选中的value
-            selectValue:''
+            selectValue:'',
+            // 搜索值
+            bookName:""
         }
     },
     props:{
@@ -64,6 +76,10 @@ export default {
         customerName:{
             type:String,
             default:''
+        },
+        // 高级搜索选中值
+        handleSelect:{
+            type:Function,
         }
     },
     // 应该可以不用 
@@ -125,6 +141,18 @@ export default {
                     name:'login',   //跳转的路径
                 })
             }
+        },
+        // 远程搜索,页面得跟着走哦，不跟着走可不行
+        querySearchAsync(val,cb) {
+            var arr = [ { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" }]
+            console.log('cb',cb)
+            cb(arr)
+        },
+        // 个人中心
+        goCenter() {
+            this.$router.push({
+                name:'center'
+            })
         }
     }
 }

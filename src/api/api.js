@@ -28,7 +28,9 @@ export default {
     // 根据商家id查询图书信息 GET /bokustore/book/book1s/{adminId}
     getListInfo(page,size,adminId) {
         // let {adminId} = data
-        return axios.get(`/bokustore/book/book1s/${page}/${size}/${adminId}`)
+        // GET 
+        return axios.post(`/bokustore/book/book1s/${page}/${size}/${adminId}`)
+        // return axios.post(`/bokustore/book/searchBooks/${page}/${size}`,data)
     },
     // 获取修改信息
     getModify(bookId) {
@@ -129,5 +131,60 @@ export default {
     // 商品详情页面直接购买
     outrightPurchase(data) {
         return axios.post(`/bokustore/book/directBuyBook`,data)
+    },
+    // 销量图书排行前十
+    getTopTenBooks() {
+        return axios.get(`/bokustore/book/getTopTenBooks`) 
+    },
+    // 商家订单管理
+    getOrder(page,size,data) {
+        return axios.post(`/bokustore/order/searchBackOrderList/${page}/${size}`,data)
+    },
+    // 发货上架
+    getDeliver(orderNumber) {
+        return axios.get(`/bokustore/order/modifyOrderState/${orderNumber}`)
+    },
+    // 修改商家信息
+    modifyBuyerInfo(data) {
+        return axios.post(`/loginRegist/admin/saveAdminInfo`,data)
+    },
+    // 上架状态
+    // GET 
+    onPopstate(bookId,state) {
+        // GET /bokustore/book/modifyGoodsState/{bookId}/{state
+        return axios.get(`/bokustore/book/modifyGoodsState/${bookId}/${state}`)
+    },
+    // 修改用户信息并保存  POST /loginRegist/user/saveUserInfo
+    onModifyCenter(data) {
+        return axios.post(`/loginRegist/user/saveUserInfo`,data)
+    },
+    // 出版社字典表
+    getPublisherInfo() {
+        return axios.get(`/boku/dictionary/publisher`)
+    },
+    // 首页根据书名查询图书
+    getHomeBook(page,size,data) {
+        return axios.post(`/bokustore/book/searchBooks/${page}/${size}`,data)
+    },
+    // 商家后台根据书名或者作者搜索图书，还支持根据出版时间，价格区间搜索
+    getHouTaiBook(page,size,adminId,data) {
+        console.log('data',data)
+        return axios.post(`/bokustore/book/backSearchBooks/${page}/${size}/${adminId}`,data)
+    },
+    // 查询商家信息
+    getShangJia(page,size) {
+        return axios.get(`/loginRegist/admin/findAdminList/${page}/${size}`)
+    },
+    // GET 
+    getYongHu(page,size) {
+        return axios.get(`/loginRegist/user/findUserList/${page}/${size}`)
+    },
+    // 删除商家
+    getDele(adminId) {
+        return axios.get(`/loginRegist/admin/deleteAdmin/${adminId}`)
+    },
+    // 删除用户信息
+    getDeleteYong(userId) {
+        return axios.get(`/loginRegist/user/deleteUser/${userId}`)
     }
 }

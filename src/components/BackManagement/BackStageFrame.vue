@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2020-04-11 18:44:50
+ * @LastEditTime: 2020-06-02 21:44:20
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \beauty-makeup-mall-dev-50eb1e56e6d14ba124d148ea1e2a7d6963c7070a\src\components\BackManagement\BackStageFrame.vue
+--> 
 <template>
     <!-- 这是后台框 -->
     <div class="stage-frame">
@@ -12,6 +20,7 @@
                 <span>欢迎登录</span>
                 <span style="color:red">{{adminName}}</span>
                 <span style="color:#409eff">|</span>
+                <span @click="goCenter">个人中心</span>
                 <span @click="onExit" class="exit">退出</span>
                 <div>
             </div>
@@ -42,6 +51,14 @@ export default {
             this.$router.push({
                 name:'tableloginIn'
             })
+        },
+        // 跳转到个人中心那块
+        goCenter() {
+            this.$router.push(
+                {
+                    name:'buyerCenter'
+                }
+            )
         }
     }
 }

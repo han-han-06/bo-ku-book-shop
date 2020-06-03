@@ -39,7 +39,12 @@
                 width="120">
             </el-table-column>
             <el-table-column
-                prop="bookCategory"
+                prop="stockCount"
+                label="库存数量"
+                width="120">
+            </el-table-column>
+            <el-table-column
+                prop="bookCategorys"
                 label="图书类别"
                 width="120">
             </el-table-column>
@@ -54,12 +59,23 @@
                 width="120">
             </el-table-column>
             <el-table-column
+                prop="putStates"
+                label="上架状态"
+                width="120">
+            </el-table-column>
+            <el-table-column
                 fixed="right"
                 label="操作"
+                width="150"
                 >
                 <template slot-scope="scope">
                     <el-button @click="onModify(scope.row)" type="text" size="small">修改</el-button>
                     <el-button type="text" size="small" @click="onDelete(scope.row)">删除</el-button>
+                    <el-button type="text" size="small" @click="onState(scope.row)">
+                        <!-- {{tableData[scope.$index].putState}} -->
+                        <span v-if="tableData[scope.$index].putState">下架</span>
+                        <span v-if="!tableData[scope.$index].putState">上架</span>
+                    </el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -92,6 +108,9 @@ export default {
         onDelete(row) {
             this.$emit('on-delete',row)
         },
+        onState(row) {
+            this.$emit('on-state',row)
+        }
         // 
     }
 }

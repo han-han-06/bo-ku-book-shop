@@ -13,41 +13,60 @@
             height="700px"
             style="width: 100%">
             <el-table-column
-                prop="cosmeticsName2"
-                label="序号"
-                width="220"> </el-table-column>
-            <el-table-column
-                prop="cosmeticsName"
+                prop="orderNumber"
                 label="订单号"
                 width="180">
             </el-table-column>
             <el-table-column
-                prop="cosmeticsNewPrice"
-                label="订单产品"
+                prop="orderTime"
+                label="下单时间"
                 width="180">
             </el-table-column>
             <el-table-column
-                prop="cosmeticsOldPrice"
-                label="订单地址"
+                prop="customName"
+                label="收货人姓名"
+                width="180">
+            </el-table-column>
+            <el-table-column
+                prop="customPhone"
+                label="收货人手机号"
+                width="180">
+            </el-table-column>
+            <el-table-column
+                prop="address"
+                label="收货人地址"
                 width="200">
             </el-table-column>
             <el-table-column
-                prop="cosmeticsCategory"
-                label="总价"
+                prop="bookName"
+                label="商品名称"
                 width="120">
             </el-table-column>
             <el-table-column
-                prop="收货人"
-                label="产家"
+                prop="orderTotalPrice"
+                label="商品价格"
+                width="150">
+            </el-table-column>
+            <el-table-column
+                prop="bookCount"
+                label="购买数量"
+                width="150">
+            </el-table-column>
+            <el-table-column
+                prop="state"
+                label="发货状态"
                 width="150">
             </el-table-column>
             <el-table-column
                 fixed="right"
                 label="操作"
+                width="100"
                 >
+                <!--发货-->
                 <template slot-scope="scope">
-                    <el-button @click="onModify(scope.row)" type="text" size="small">修改</el-button>
-                    <el-button type="text" size="small" @click="onDelete(scope.row)">删除</el-button>
+                    <!-- <el-button>{{scope.$index}}</el-button> -->
+                    <!-- {{tableData[scope.$index].orderState}} -->
+                    <el-button :disabled="tableData[scope.$index].orderStates" round @click="onDeliver(scope.row)" type="primary" size="small">发货</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -73,14 +92,10 @@ export default {
     },
     methods:{
         // 點擊修改按鈕
-        onModify(row) {
-            this.$emit('on-modify',row)
+        onDeliver(row) {
+            console.log('row',row)
+            this.$emit('on-deliver',row)
         },
-        // 點擊刪除功能
-        onDelete(row) {
-            this.$emit('on-delete',row)
-        },
-        // 
     }
 }
 </script>

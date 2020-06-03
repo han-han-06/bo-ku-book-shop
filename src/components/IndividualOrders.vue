@@ -21,6 +21,7 @@
             <span style="margin-left:53px">数量</span>
             <span>金额</span>
             <span>地址</span>
+            <span>订单状态</span>
             <!-- <span style="margin-right:53px">状态</span> -->
             <!-- 操作变成已完成的那种就好 -->
             <span style="margin-right:40px">操作</span>
@@ -49,16 +50,19 @@
                         <span>{{item.bookCount}}</span>
                     </div>
                     <!-- 图书价格 -->
-                    <div style="margin-left:195px;color:red;flex-shink:0">
+                    <div style="margin-left:155px;color:red;flex-shink:0">
                         <span>￥{{item.orderTotalPrice}}</span>
                     </div>
-                    <!-- 收货人 -->
-                    <div style="margin-left:200px;flex-warp:nowarp">
+                    <!-- 地址 -->
+                    <div style="margin-left:100px" class="dizhi">
                         <span>{{item.address}}</span>
                     </div>
+                    <div style="margin-left:100px;flex-warp:nowarp">
+                        <span>{{item.orderStates}}</span>
+                    </div>
                     <!-- 状态 -->
-                    <div style="margin-left:229px;color:red">
-                        <el-button type="text" @click="confirmReceipt(item)" style="color:red">去评价</el-button>
+                    <div style="margin-left:180px;color:red">
+                        <el-button type="text" :disabled="!(item.orderState==1)" @click="confirmReceipt(item)" style="color:red">去评价</el-button>
                         <!-- <el-button type="text">确认收货</el-button> -->
                     </div>
                 </div>
@@ -96,7 +100,7 @@ export default {
                 page:1,
                 size:20
             },
-            totalOrder:0,
+            totalOrder:0
         }
     },
     created() {
@@ -111,6 +115,13 @@ export default {
             request.getOrderUser(page,size,userId).then(res =>{
                 // console.log('res',res)
                 this.arr = res.orderVOList
+                this.arr.map(el =>{
+                    if(el.orderState==0) {
+                        el.orderStates = '未发货'
+                    }else if(el.orderState==1) {
+                        el.orderStates = '已发货'
+                    }
+                })
                 this.totalOrder = res.count
             })
         },
@@ -138,8 +149,7 @@ export default {
         backHome () {
             this.$router.push(
                 {
-                    name:"bookStoreHome",
-                  
+                    name:"bookStoreHome"
                 }
             )
         } 
@@ -244,6 +254,10 @@ export default {
         }
         
         
+    }
+    .dizhi{
+        // color: aquamarine;
+        width: 100px;
     }
 }
 .back-top {

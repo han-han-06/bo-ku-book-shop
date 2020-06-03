@@ -1,15 +1,15 @@
 <template>
 <!-- 每一栏图书，精选图书，特价图书 -->
-    <div class="lanmu">
-        <div class="lanmu-heng">
-            <p class="jingxuan">{{title}}</p>
-            <span class="hengxian"></span>
+    <div class="lanmus">
+        <div class="lanmu-hengs">
+            <p class="jingxuans">{{title}}</p>
+            <span class="hengxians"></span>
         </div>
-        <div class="lanmu-pic">
+        <div class="lanmu-pics">
             
-                <div v-for='(item,index) in arrList' :key='index' class="pic-info">
-                    <div v-if="index<=4">
-                        <div class="pic-aaa" @click="goDetail(item)">
+                <div v-for='(item,index) in arrList' :key='index' class="pic-infos">
+                    <div >
+                        <div class="pic-aaas" @click="goDetail(item)">
                             <!-- 图片{{index}} -->
                             <span class="bok-pic">                               
                                 <!-- 160*160 -->
@@ -61,12 +61,13 @@ export default {
 }
 </script>
 <style scoped lang='scss'>
-.lanmu {
-    height: 100%;
-    width: 800px;
+.lanmus {
+    height: 900px;
+    width: 1200px;
+    box-sizing: border-box;
     overflow: hidden;
     // margin-bottom: 20px;
-    .jingxuan {
+    .jingxuans {
         margin-left: 20px;
         font-size: 16px;
         font-weight: 700;
@@ -74,13 +75,13 @@ export default {
         flex-shrink: 0;
         margin-right: 20px;
     }
-    .lanmu-heng {
-        width: 800px;
+    .lanmu-hengs {
+        width: 100%;
         display: flex;
         // margin-bottom: 20px;
         align-items: center;
     }
-    .hengxian {
+    .hengxians {
         width: 100%;
         display: inline-block;
         height: 1px;
@@ -88,24 +89,26 @@ export default {
     }
     //  
 }
-.lanmu-pic {
-    padding: 0 20px;
+.lanmu-pics {
+    // padding: 0 20px;
     // background-color: #ccc;
     display: flex;
-    width: 100%;
+    width: 1200px;
+    flex-wrap: wrap;
     box-sizing: border-box;
-    .pic-aaa {
+    .pic-aaas {
         width: 132px;
         background-color: #f8f8f8;
         border: 1px solid #ccc;
         text-align: center;
+        margin-bottom: 20px;
         .price {
             color: #EB4C44;
             
         }
         .bok-pic {
             height: 150px;
-            // width: 160px;
+            // width: 150px;
             display: inline-block;
             img {
                 height:100%;
@@ -113,13 +116,13 @@ export default {
             }
         }
     }
-    .pic-aaa:hover {
+    .pic-aaas:hover {
         cursor: pointer;
     }
 }
-.pic-info {
+.pic-infos {
     height: 100%;
-    width: 250px;
+    width: 215px;
     // background-color: greenyellow;
     margin-right: 20px;
 }

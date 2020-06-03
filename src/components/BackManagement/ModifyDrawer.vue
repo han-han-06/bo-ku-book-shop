@@ -3,13 +3,13 @@
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" 
         label-width="150px" class="demo-ruleForm" label-position='left'>
             <el-form-item label="书名" prop="bookName">
-                <el-input v-model="ruleForm.bookName"></el-input>
+                <el-input v-model="ruleForm.bookName" disabled></el-input>
             </el-form-item>
             <el-form-item label="作者" prop="bookAuthor">
-                <el-input v-model="ruleForm.bookAuthor"></el-input>
+                <el-input v-model="ruleForm.bookAuthor" disabled></el-input>
             </el-form-item>
             <el-form-item label="图书国际编号" prop="bookIsbn">
-                <el-input v-model="ruleForm.bookIsbn"></el-input>
+                <el-input v-model="ruleForm.bookIsbn" disabled></el-input>
             </el-form-item>
             <el-form-item label="图书类别" prop="bookCategory">
                 <el-select v-model="ruleForm.bookCategory" placeholder="请选择">
@@ -20,17 +20,41 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="出版社" prop="bookPublish">
-                <el-input v-model="ruleForm.bookPublish"></el-input>
+                <el-select v-model="ruleForm.bookPublish" placeholder="请选择">
+                    <el-option v-for="(item,index) in bookPublish" 
+                    :key="index" 
+                    :label="item.label" 
+                    :value="item.value"></el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="出版时间" prop="bookPublishTime">
                 <el-input v-model="ruleForm.bookPublishTime"></el-input>
             </el-form-item>
-            <el-form-item label="图书价格" prop="bookNewPrice">
+            <el-form-item label="图书价格" prop="bookOldPrice">
+                <el-input v-model="ruleForm.bookOldPrice" @blur="bookPrice(ruleForm.bookOldPrice)"></el-input>
+            </el-form-item>
+            <el-form-item label="折扣率" prop="discountRate">
+                <el-select v-model="putawayState" placeholder="请选择" @change="changeDisount">
+                    <el-option v-for="(item,index) in disCountList" 
+                    :key="index" 
+                    :label="item.label" 
+                    :value="item.value"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="图书现价" prop="bookNewPrice">
                 <el-input v-model="ruleForm.bookNewPrice"></el-input>
             </el-form-item>
-            <el-form-item label="图书原价" prop="bookOldPrice">
-                <el-input v-model="ruleForm.bookOldPrice"></el-input>
+            <el-form-item label="库存数量" prop="stockCount">
+                <el-input v-model.number="ruleForm.stockCount"></el-input>
             </el-form-item>
+            <!-- <el-form-item label="上架状态" prop="putawayState">
+                <el-select v-model="ruleForm.putawayState" placeholder="请选择">
+                    <el-option v-for="(item,index) in putawayStateList" 
+                    :key="index" 
+                    :label="item.label" 
+                    :value="item.value"></el-option>
+                </el-select>
+            </el-form-item> -->
             <!-- 上传封面 -->
             <!-- 图书封面 -->
             <el-form-item label="图书封面">
@@ -82,7 +106,6 @@
                 <el-button type="primary" @click="onSave('ruleForm')">修改</el-button>
                 <el-button @click="resetForm('ruleForm')">重置</el-button>
             </el-form-item>
-            <!--  -->
     </el-form>
     </div>
 </template>
@@ -99,17 +122,51 @@ export default {
             // 图书类型字典表
             bookClassify:[
                     {
-                        label: "精选图书",
+                        label: "文学图书",
                         value: 1
                     },
                     {
-                        label: "推荐图书",
+                        label: "科普图书",
                         value: 2
                     },
                     {
-                        label: "热卖图书",
+                        label: "儿童图书",
                         value: 3
                     }
+            ],
+            // 折扣率
+            disCountList:[
+            {
+                label:'30%',
+                value:'0.3'
+            },
+            {
+                label:'50%',
+                value:'0.5'
+            },
+            {
+                label:'70%',
+                value:'0.7'
+            },
+            {
+                label:'90%',
+                value:'0.9'
+            },
+        ],
+            // 上架状态
+            putawayStateList:[
+                    {
+                        label: "已上架",
+                        value: 1
+                    },
+                    {
+                        label: "已下架",
+                        value: 2
+                    },
+                    {
+                        label: "未上架",
+                        value: 3
+                    },
             ],
             rules:{
                 bookName:[
@@ -152,7 +209,14 @@ export default {
             // 封面路径 
             dialogImageUrl2:'',
             // 图片是否能显示
-            picDialog:false
+            picDialog:false,
+            // 折扣率
+            discountRateList:[],
+             // 商品现价
+            bookOldPrice:'',
+            putawayState:'',
+            // 出版社字典表
+            bookPublish:[]
         }
     },
     props:{
@@ -163,10 +227,23 @@ export default {
         }
         // 
     },
+    computed:{
+        bookNewPrice: function () {
+            if(this.bookOldPrice && this.putawayState) {
+                // console.log(222)
+                let price  = Number(this.bookOldPrice)*this.putawayState
+                return Number(this.bookOldPrice)*this.putawayState
+            }else {
+                return this.bookOldPrice
+            }
+        }
+    },
     watch:{
     },
     created() {
+        // this.bookNewPrice = 111
         this.bookId = this.ruleForm.bookId
+        // this.bookNewPrice = this.ruleForm.bookNewPrice
         // bookPictures
         let arr = this.ruleForm.bookPictures
         for(let item of arr) {
@@ -177,8 +254,19 @@ export default {
                 this.bookPictures.push({url:item.pictureUrl})
             }
         }
+        this.getPublisher()
     },
     methods:{
+        zheKou(price,disCount) {
+            // let price = 
+            let num = price*disCount
+            this.ruleForm.bookNewPrice = num
+        },
+        getPublisher() {
+             request.getPublisherInfo().then(res =>{
+                 this.bookPublish = res
+             })
+        },
         // 修改的保存
         onSave(formName){
         this.$refs[formName].validate((valid) => {
@@ -196,9 +284,10 @@ export default {
                 obj2.pictureUrl = this.picArr[0].url
                 obj2.mainPic = true
                 bookPictures.push(obj2)
-                this.ruleForm.bookOldPrice = `${this.ruleForm.bookOldPrice}`
-                
-                 this.ruleForm.bookNewPrice = `${this.ruleForm.bookNewPrice}`
+                // this.ruleForm.bookNewPrice = this.bookNewPrice
+                // this.ruleForm.bookOldPrice = this.bookOldPrice
+                // this.ruleForm.bookOldPrice = `${this.ruleForm.bookOldPrice}`
+                // this.ruleForm.bookNewPrice = `${this.ruleForm.bookNewPrice}`
                 let data = {...this.ruleForm,adminId,bookPictures}
                 request.saveModifyFrom(bookId,data).then(res =>{
                     // 关闭侧滑
@@ -268,6 +357,13 @@ export default {
             
             // console.log('bookPictures,移除',this.bookPictures
         },
+        changeDisount(val) {
+            console.log('val',val)
+            this.zheKou(this.ruleForm.bookOldPrice,val)
+        },
+        bookPrice(val) {
+            this.zheKou(val,this.putawayState)
+        }
     }
 }
 </script>

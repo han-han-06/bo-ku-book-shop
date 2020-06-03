@@ -24,11 +24,42 @@
             </el-form-item>
             <!-- bookDetail 图书详情 -->
             <el-form-item label="出版社" prop="bookPublish">
-                <el-input v-model="ruleForm.bookPublish"></el-input>
+                 <el-select v-model="ruleForm.bookPublish" placeholder="请选择">
+                    <el-option v-for="(item,index) in bookPublish" 
+                    :key="index" 
+                    :label="item.label" 
+                    :value="item.value"></el-option>
+                </el-select>
+                <!-- <el-input v-model="ruleForm.bookPublish"></el-input> -->
             </el-form-item>
             <el-form-item label="出版时间" prop="bookPublishTime">
                 <el-input v-model="ruleForm.bookPublishTime"></el-input>
             </el-form-item>
+                <el-form-item label="库存数量" prop="stockCount">
+                <el-input v-model.number="ruleForm.stockCount"></el-input>
+            </el-form-item>
+            <el-form-item label="图书价格" prop="bookOldPrice">
+                <el-input v-model="bookOldPrice"></el-input>
+            </el-form-item>
+            <el-form-item label="折扣率" prop="discountRate">
+                <el-select v-model="putawayState" placeholder="请选择">
+                    <el-option v-for="(item,index) in disCountList" 
+                    :key="index" 
+                    :label="item.label" 
+                    :value="item.value"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="图书现价" prop="bookNewPrice">
+                <el-input v-model="bookNewPrice"></el-input>
+            </el-form-item>
+            <!-- <el-form-item label="上架状态" prop="putawayState">
+                <el-select v-model="ruleForm.putawayState" placeholder="请选择">
+                    <el-option v-for="(item,index) in putawayStateList" 
+                    :key="index" 
+                    :label="item.label" 
+                    :value="item.value"></el-option>
+                </el-select>
+            </el-form-item> -->
             <!-- 上传封面 -->
             <el-form-item label="图书封面">
             <div>
@@ -63,12 +94,6 @@
                 </el-dialog>
             </div>
             </el-form-item>
-            <el-form-item label="图书价格" prop="bookNewPrice">
-                <el-input v-model="ruleForm.bookNewPrice"></el-input>
-            </el-form-item>
-            <el-form-item label="图书原价" prop="bookOldPrice">
-                <el-input v-model="ruleForm.bookOldPrice"></el-input>
-            </el-form-item>
             <!-- 上传图片。 -->
             <el-form-item>
                 <el-button type="primary" @click="onSave('ruleForm')">立即创建</el-button>
@@ -90,27 +115,43 @@ export default {
                 bookCategory:"",
                 bookIsbn:'',
                 bookName:'',
-                bookNewPrice:"",
-                bookOldPrice:"",
+                bookNewPrice:'',
+                bookOldPrice:'',
                 bookPublish:'',
                 bookPublishTime:'',
                 bookDetail:''
             },
+            bookPublish:[],
             // 图书字典表
             bookClassify:[
                     {
-                        label: "精选图书",
+                        label: "文学图书",
                         value: 1
                     },
                     {
-                        label: "推荐图书",
+                        label: "科普图书",
                         value: 2
                     },
                     {
-                        label: "热卖图书",
+                        label: "儿童图书",
                         value: 3
                     }
                 ],
+                // 上架状态
+            putawayStateList:[
+                    {
+                        label: "已上架",
+                        value: 1
+                    },
+                    {
+                        label: "已下架",
+                        value: 2
+                    },
+                    {
+                        label: "未上架",
+                        value: 3
+                    },
+            ],
             rules:{
                 bookName:[
                     { required: true, message: '请输入', trigger: 'blur' },
@@ -127,12 +168,12 @@ export default {
                 bookIsbn:[
                     { required: true, message: '请输入', trigger: 'blur' },
                 ],
-                bookNewPrice:[
-                    { required: true, message: '请输入', trigger: 'blur' },
-                ],
-                bookOldPrice:[
-                    { required: true, message: '请输入', trigger: 'blur' },
-                ],
+                // bookNewPrice:[
+                //     { required: true, message: '请输入', trigger: 'blur' },
+                // ],
+                // bookOldPrice:[
+                //     { required: true, message: '请输入', trigger: 'blur' },
+                // ],
                 bookPublish:[
                     { required: true, message: '请输入', trigger: 'blur' },
                 ],
@@ -151,24 +192,68 @@ export default {
             // 是否显示主图图片
             dialogVisible2:false,
             // 封面list，实际上封面只能有一个
-            picArr:[]
+            picArr:[],
+            disCountList:[
+            {
+                label:'30%',
+                value:'0.3'
+            },
+            {
+                label:'50%',
+                value:'0.5'
+            },
+            {
+                label:'70%',
+                value:'0.7'
+            },
+            {
+                label:'90%',
+                value:'0.9'
+            },
+        ],
+        // 商品现价
+        bookOldPrice:'',
+        putawayState:''
+        // bookNewPrice:''
         }
     },
     created() {
         let a = this.$store.state.adminId
+        // 获取出版社字典表
+        this.getPublisher()
         // console.log('a',a)
     },
+    computed:{
+        bookNewPrice: function () {
+            if(this.bookOldPrice&&this.putawayState) {
+                console.log(222)
+                let price  = Number(this.bookOldPrice)*this.putawayState
+                return Number(this.bookOldPrice)*this.putawayState
+            }else {
+                return this.bookOldPrice
+            }
+        }
+    },
     methods:{
+        getPublisher() {
+            request.getPublisherInfo().then(res =>{
+                this.bookPublish = res
+            })
+        },
         // mainPic 是否是封面（也就是主图片）
         onSave(formName){
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    let adminId = this.$store.state.adminId
+                    let adminId = sessionStorage.getItem("adminId")
+                    // let address = sessionStorage.getItem("address")
+                    this.ruleForm.bookNewPrice = this.bookNewPrice
+                    this.ruleForm.bookOldPrice = this.bookOldPrice
                     let {ruleForm,bookPictures,picArr} = this
                     // 把封面和其他详情图片都盒到一块
                     bookPictures.push(...picArr)
                     // 参数整合
                     let data = {...ruleForm,adminId,bookPictures}
+                    // console.log('data',data)
                     // 新增成功，关闭侧滑
                     request.addBook(data).then(res =>{
                         this.$commonUtils.setMessage('success','添加成功')
@@ -178,6 +263,7 @@ export default {
                 // 
             });
         },
+        
         // 关闭弹窗
         resetForm() {
             this.$emit('close-add')

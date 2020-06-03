@@ -89,14 +89,16 @@ import request from '../../api/api'
                          // 将用户信息存储到本地
                         sessionStorage.setItem("adminId", res.adminId);
                         sessionStorage.setItem("adminName", res.adminName);
+                        sessionStorage.setItem("adminPassword", res.adminPassword);
+                        sessionStorage.setItem("adminPhone", res.adminPhone);
+                        sessionStorage.setItem("adminSex", res.adminSex);
+                        // 管理员身份
+                        sessionStorage.setItem("isSuperAdmin", res.isSuperAdmin);
                         // 获取登录名
                         this.$store.state.adminName = res.adminName
-                        // setTimeout(() =>{
-                            // 跳转到登录页面
                         this.$router.push({
-                            name:'manageHome'
+                            name:'homeTab'
                         })
-                        // },300)
                     })
                     
                 }
@@ -200,8 +202,4 @@ import request from '../../api/api'
         margin-right: 150px;
     }
 }
-// .aaa {
-//     display: flex;
-//     justify-content: space-between;
-// }
 </style>

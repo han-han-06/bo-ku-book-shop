@@ -22,6 +22,8 @@ const individualOrders =()=>import('@/components/IndividualOrders')
 const qrCode =()=>import('@/components/QrCode')
 // confirmPay
 // 确认支付页面
+// BookXiaoLiang
+const bookXiaoLiang =()=>import('@/components/BookXiaoLiang')
 const confirmPay =()=>import('@/components/ConfirmPay')
 const addAddress = ()=>import('@/components/AddAddress')
 const tableRegister = ()=> import('@/components/BackManagement/TableRegister')
@@ -29,6 +31,8 @@ const bookComment = ()=> import('@/components/BookComment')
 const purchaseInfo = ()=>import('@/components/PurchaseInfo')
 const successPayment =()=>import('@/components/SuccessPayment')
 const homeTab =()=>import('@/components/BackManagement/HomeTab')
+// 前台个人中心页面
+const center =()=>import('@/components/Center')
 Vue.use(Router)
 const VueRouterPush = Router.prototype.push 
 Router.prototype.push = function push (to) {
@@ -40,6 +44,11 @@ export default new Router({
       path:'/',
       // 重定向路径名
       redirect:'/bookStoreHome',
+    },
+    {
+      path:'/bookXiaoLiang',
+      name:"bookXiaoLiang",
+      component:bookXiaoLiang
     },
     {
       path: '/bookStoreHome',
@@ -66,6 +75,12 @@ export default new Router({
       path:'/bookDetails',
       name:'bookDetails',
       component:bookDetails
+    },
+    // 前台个人中心页面
+    {
+      path:"/center",
+      name:'center',
+      component:center
     },
     {
       path:'/bookComment',
@@ -138,6 +153,12 @@ export default new Router({
         name:'tableRegister',
         component:tableRegister
       },
+       // 后台卖家个人中心
+      {
+        path:'buyerCenter',
+        name:'buyerCenter',
+        component:() =>import('../components/BackManagement/BuyerCenter')
+      },
     {
       path:'/backStageFrame',
       name:'backStageFrame',
@@ -149,6 +170,12 @@ export default new Router({
           name:'homeTab',
           component:homeTab
         },
+        // 管理员页面
+        // {
+        //   path:'superTable',
+        //   name:'superTable',
+        //   component:() =>import('../components/BackManagement/SuperTable')
+        // }
       ]
     }
   ]

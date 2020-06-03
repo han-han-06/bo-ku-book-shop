@@ -226,6 +226,7 @@ export default {
                     }
                     request.getOrderInfo(pramas).then(res =>{
                         let address = res[0].address
+                        // let 
                         sessionStorage.setItem("payInfo", JSON.stringify(res))
                         sessionStorage.setItem("address", JSON.stringify(address));
                         this.$router.push(

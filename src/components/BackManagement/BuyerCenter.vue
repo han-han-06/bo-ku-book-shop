@@ -25,40 +25,29 @@
                 class="demo-ruleForm"
                 :hide-required-asterisk='true'>
                     <el-form-item label="用户名" prop="adminName">
-                        <el-input v-model="ruleForm.adminName"></el-input>
+                        <el-input v-model="ruleForm.adminName" :disabled="isDis"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-radio-group v-model="ruleForm.adminSex" prop='adminSex'>
+                        <el-radio-group v-model="ruleForm.adminSex" prop='adminSex' :disabled="isDis">
                             <el-radio :label="0">男</el-radio>
                             <el-radio :label="1">女</el-radio>
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="手机号" prop="adminPhone">
-                        <el-input v-model="ruleForm.adminPhone"></el-input>
+                        <el-input v-model="ruleForm.adminPhone" :disabled="true"></el-input>
                     </el-form-item>
-                    <el-form-item label="验证码" prop="verificationCode">
-                            <div class="verification">
-                                <el-input v-model="ruleForm.verificationCode" class="bbb"></el-input>
-                                <el-button @click.stop="getCode" class="aaa">
-                                    <span v-if="!ranNum">验证码</span>
-                                    <span>{{ranNum}}</span>
-                                </el-button>
-                            </div>
-                    </el-form-item>   
                     <el-form-item label="密码" prop="adminPassword">
-                        <el-input type="password" v-model="ruleForm.adminPassword" autocomplete="off"></el-input>
+                        <el-input type="password" v-model="ruleForm.adminPassword" autocomplete="off" :disabled="true"></el-input>
                     </el-form-item>
-                    <el-form-item label="确认密码" prop="checkPass">
-                        <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
-                    </el-form-item>
-                    <el-form-item label="是否管理员" prop="">
-                        <el-radio-group v-model="ruleForm.isSuperAdmin" prop='isSuperAdmin'>
-                            <el-radio :label="true">是</el-radio>
-                            <el-radio :label="false">否</el-radio>
-                        </el-radio-group>
+                    <!-- <el-form-item label="确认密码" prop="checkPass">
+                        <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" :disabled="isDis"></el-input>
+                    </el-form-item> -->
+                    <el-form-item>
+                        <el-button type="primary" @click="modifyInfo" class="zhuce-btn">修改信息</el-button>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="submitForm('ruleForm')" class="zhuce-btn">注册</el-button>
+                        <!-- <el-button type="primary" @click="modifyInfo" class="zhuce-btn">修改信息</el-button> -->
+                        <el-button type="primary" @click="submitForm()" class="zhuce-btn">保存信息</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -132,26 +121,41 @@ import request from '../../api/api'
                 adminName:[
                     { required: true, message: '请输入用户名', trigger: 'change' }
                 ]
-            }
+            },
+            // 是否禁用
+            isDis:true,
+            adminId:''
         };
         },
+        created() {
+            this.ruleForm.adminName = sessionStorage.getItem("adminName");
+            let adminSex = sessionStorage.getItem("adminSex");
+            if(adminSex=='男') {
+                this.ruleForm.adminSex = 0
+            }else{
+                this.ruleForm.adminSex = 1
+            }
+            this.ruleForm.adminPhone = sessionStorage.getItem("adminPhone");
+            this.ruleForm.adminPassword = sessionStorage.getItem("adminPassword");
+            this.adminId = sessionStorage.getItem("adminId");
+        },
         methods: {
-        submitForm(formName) {
-            this.$refs[formName].validate().then(() =>{
-                request.adminRegister({...this.ruleForm}).then(res =>{
-                    this.$commonUtils.setMessage('success','注册成功')
-                    // 注册成功跳转到登录页面
-                    this.$router.push(
-                        {name:'tableloginIn'}
-                    )
-                })
-            }).catch(err=>{
-            })
-        },
+        // submitForm(formName) {
+        //     this.$refs[formName].validate().then(() =>{
+        //         request.adminRegister({...this.ruleForm}).then(res =>{
+        //             this.$commonUtils.setMessage('success','注册成功')
+        //             // 注册成功跳转到登录页面
+        //             this.$router.push(
+        //                 {name:'tableloginIn'}
+        //             )
+        //         })
+        //     }).catch(err=>{
+        //     })
+        // },
         // 重置
-        resetForm(formName) {
-            this.$refs[formName].resetFields();
-        },
+        // resetForm(formName) {
+        //     this.$refs[formName].resetFields();
+        // },
         // 获取随机数
         getRandom(n, m) { 
             n = Number(n);
@@ -180,6 +184,26 @@ import request from '../../api/api'
             this.$router.push({
                 name:'tableloginIn',   
             })
+        },
+        // 点击修改信息按钮
+        modifyInfo() {
+            // 取消禁用
+            this.isDis = false
+            
+        },
+        // 保存信息
+        submitForm() {
+            let {ruleForm} =  this
+            let {adminId} = this
+            // console.log('ruleForm',ruleForm)
+            request.modifyBuyerInfo({...ruleForm,adminId}).then(res =>{
+                this.$commonUtils.setMessage('success','修改成功')
+                // console.log('res',res)
+                // 跳转到登录页面
+                this.$router.push({
+                    name:'tableloginIn'
+                })
+            }) 
         }
         }
     }

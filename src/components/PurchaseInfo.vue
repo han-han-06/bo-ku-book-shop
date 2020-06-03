@@ -113,15 +113,15 @@ export default {
             let address = sessionStorage.getItem("address")
             this.realAddress = JSON.parse(address)
             arr = JSON.parse(arr)
+            // console.log('arr',arr)
             // console.log('this.addressInfo.receiver',this.addressInfo.receiver)
             // if (!JSON.stringify(this.addressInfo) === '{}') {
             //     console.log(22222)
             //     this.realAddress = this.addressInfo
             //     console.log('rrrrr',this.realAddress)
             // }
-            console.log('realAddress66666',this.realAddress)
+            // console.log('realAddress66666',this.realAddress)
             this.billingInfo = arr
-
         },
         // 立即结算，跳转到我的订单页面
         onPurchaseConfirm() {
@@ -131,7 +131,9 @@ export default {
             let addressId = this.realAddress.addressId
             // 获取订单信息
             let settleAccountDTOS = []
+            
             this.billingInfo.map(el =>{
+                console.log('el2242',el)
                 let obj = {}
                 obj.address = this.realAddress.address
                 obj.bookCount = el.bookCount
@@ -139,6 +141,7 @@ export default {
                 obj.orderPrice = el.bookCount*el.bookNewPrice
                 obj.receiver =  this.realAddress.receiver
                 obj.phone =  this.realAddress.phone
+                obj.adminId = el.adminId
                 settleAccountDTOS.push(obj)
             })
             let userId = sessionStorage.getItem("userId")
@@ -148,7 +151,7 @@ export default {
                     // 跳转到相应的扫描二维码的页面
                     // this.$commonUtils.setMessage('success','结算成功')
                     this.$router.push({
-                        name:'qrCode'
+                        name:'successPayment'
                     })
                 })
             

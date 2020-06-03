@@ -1,5 +1,6 @@
 <template>
     <div>
+        <!-- 轮播的图 -->
         <div class="block">
             <el-carousel height="475px">
                 <el-carousel-item v-for="(item,index) in carouselData" :key="index">
