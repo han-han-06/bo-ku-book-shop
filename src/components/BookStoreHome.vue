@@ -60,14 +60,14 @@
                             <!-- 科普图书 -->
                         <div class="remai">
                             <BookJingXuan
-                            :title="'科普图书'"
+                            :title="'儿童图书'"
                             :arrList='hotsellBooks'
                             ></BookJingXuan>
                         </div>
                         <!-- 儿童图书 -->
                         <div class="tejia">
                             <BookJingXuan
-                            :title="'儿童图书'"
+                            :title="'科普图书'"
                             :arrList='recommendedBooks'
                             ></BookJingXuan>
                         </div>
@@ -219,7 +219,7 @@ export default {
                     this.titleList = "文学图书"
                 }else if(value ==2) {
                     this.titleList = '科普图书'
-                }else {
+                }else if(value ==3){
                     this.titleList = "儿童图书"
                 }
                 this.categoryId = value
@@ -265,9 +265,9 @@ export default {
             }
             // 进行数据的请求
             request.getHomeBook(page,size,{...this.formInline}).then(res =>{
-                console.log('res',res)
+                // console.log('res',res)
                 // 获取改分类下的图书
-                this.categoryList = res
+                this.categoryList = res.bookVOList
                 // this.categoryList
             })
         },
@@ -277,8 +277,8 @@ export default {
     }
 }
 </script>   
-
 <style scoped lang='scss'>
+    // 你说你有点
     .home-book {
         height: 100%;
         width: 1200px;

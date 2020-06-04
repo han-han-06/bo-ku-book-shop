@@ -14,7 +14,7 @@
         </div>
         <div v-else>
             <el-tabs type="border-card">
-                <!-- 商品管理 -->
+                <!-- 用户管理 -->
                 <el-tab-pane label="用户管理" >
                     <UserTable></UserTable>
                 </el-tab-pane>

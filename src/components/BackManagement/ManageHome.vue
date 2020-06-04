@@ -127,6 +127,7 @@ export default {
                 publisTimes:[],
                 prices:[]
             },
+            // 
             // 分页
             pageInfo:{
                 size:10,
@@ -202,7 +203,7 @@ export default {
                 data.prices = []
             }
             request.getHouTaiBook(page,size,adminId,{...data,adminId:adminId}).then(res =>{
-                this.tableData = res
+                this.tableData = res.bookVOList
                 this.tableData.map(el =>{
                     if(el.putState) {
                         el.putStates = '已上架'
@@ -217,7 +218,7 @@ export default {
                         el.bookCategorys = '儿童图书'
                     }
                 })
-                this.total = res.length
+                this.total = res.count
                 setTimeout(()=>{
                     this.tableLoading = false
                 },300)

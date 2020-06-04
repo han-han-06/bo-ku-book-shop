@@ -61,7 +61,7 @@
             <div>
                 <el-upload
                     class="upload-demo"
-                    action="http://192.168.10.83:8989/bokustore/book/upload"
+                    action="http://192.168.10.96:8989/bokustore/book/upload"
                     name='picture'
                     :on-preview="handlePictureCardPreview2"
                     :on-remove="handleRemove2"
@@ -70,7 +70,7 @@
                     list-type="picture"
                     >
                     <el-button size="small" type="primary">点击上传</el-button>
-                    <div slot="tip" class="el-upload__tip">只能上传一张主图</div>
+                    <!-- <div slot="tip" class="el-upload__tip">只能上传一张主图</div> -->
                     <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
                 </el-upload>
                 <el-dialog :visible.sync="dialogVisible2">
@@ -80,8 +80,8 @@
             </el-form-item>
             <!-- 上传大图-->
             <!-- 这有点问题，就是不能展示后端给的图片 -->
-            <el-form-item label="图片详情">
-                <!-- 这里放一个div，用于放置图片 -->
+            <!-- <el-form-item label="图片详情">
+              
                 <el-upload
                     class="upload-demo"
                     action="http://192.168.10.83:8989/bokustore/book/upload"
@@ -95,8 +95,7 @@
                     <el-button size="small" type="primary">点击上传</el-button>
                     
                 </el-upload>
-                <!-- -->
-            </el-form-item>
+            </el-form-item> -->
             <div >
                 <el-dialog :visible.sync="dialogVisible">
                     <img width="100%" :src="dialogImageUrl" alt="">

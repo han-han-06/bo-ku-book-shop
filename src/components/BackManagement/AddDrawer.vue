@@ -64,7 +64,7 @@
             <el-form-item label="图书封面">
             <div>
                 <el-upload
-                    action="http://192.168.10.83:8989/bokustore/book/upload"
+                    action="http://192.168.10.96:8989/bokustore/book/upload"
                     name='picture'
                     list-type="picture-card"
                     :on-preview="handlePictureCardPreview2"
@@ -78,7 +78,7 @@
             </div>
             </el-form-item>
             <!-- 上传一些大图片 -->
-            <el-form-item label="详情图片" prop="bookPicture">
+            <!-- <el-form-item label="详情图片" prop="bookPicture">
             <div>
                 <el-upload
                     action="http://192.168.10.83:8989/bokustore/book/upload"
@@ -93,7 +93,7 @@
                     <img width="100%" :src="dialogImageUrl" alt="">
                 </el-dialog>
             </div>
-            </el-form-item>
+            </el-form-item> -->
             <!-- 上传图片。 -->
             <el-form-item>
                 <el-button type="primary" @click="onSave('ruleForm')">立即创建</el-button>

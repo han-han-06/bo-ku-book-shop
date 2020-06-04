@@ -57,10 +57,11 @@
                     <div style="margin-left:100px" class="dizhi">
                         <span>{{item.address}}</span>
                     </div>
+                    <!-- 状态 -->
                     <div style="margin-left:100px;flex-warp:nowarp">
                         <span>{{item.orderStates}}</span>
                     </div>
-                    <!-- 状态 -->
+                    
                     <div style="margin-left:180px;color:red">
                         <el-button type="text" :disabled="!(item.orderState==1)" @click="confirmReceipt(item)" style="color:red">去评价</el-button>
                         <!-- <el-button type="text">确认收货</el-button> -->
